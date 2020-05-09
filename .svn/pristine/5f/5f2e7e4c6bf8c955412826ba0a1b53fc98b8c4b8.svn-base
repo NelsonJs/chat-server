@@ -1,0 +1,6 @@
+app:
+  logFile: log/gin.log
+  httpPort: 8080
+  webSocketPort: 7979
+  httpUrl: 127.0.0.1:8080
+  webSocketUrl: 127.0.0.1:7979
