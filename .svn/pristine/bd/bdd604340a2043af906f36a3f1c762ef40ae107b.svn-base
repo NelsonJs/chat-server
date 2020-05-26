@@ -1,0 +1,16 @@
+package mysql_serve
+
+import (
+	"database/sql"
+
+	_ "github.com/go-sql-driver/mysql"
+)
+
+func InitMySQL() {
+	db, err := sql.Open("mysql", "root:6678510jk@tcp(127.0.0.1:3306)/demo?charset=utf8")
+	if err != nil {
+
+		return
+	}
+
+}

@@ -5,9 +5,9 @@ import (
 	"io"
 	"os"
 
+	"chat/db/mysql_serve"
 	"chat/db/redis_serve"
 	"chat/routers"
-	"chat/service/websocket"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -17,11 +17,12 @@ var redisManager *redis_serve.RedisManager
 
 func main() {
 	initConfig()
-	initFile()
-	//routers.Init()
+	//initFile()
 	routers.InitScocketRouters()
-	redisManager = redis_serve.ConnectRedis()
-	websocket.StartWebSocket(redisManager)
+	mysql_serve.InitMySQL()
+	//redisManager = redis_serve.ConnectRedis()
+	//go websocket.StartWebSocket(redisManager)
+	routers.Init()
 }
 
 func initFile() {
@@ -39,5 +40,5 @@ func initConfig() {
 	if err != nil {
 		panic(fmt.Errorf("fatal error config file:%s \n", err))
 	}
-	fmt.Println("config app:", viper.Get("app"))
+	fmt.Println("config app:", viper.GetString("app"))
 }

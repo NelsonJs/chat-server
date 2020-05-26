@@ -1,12 +1,26 @@
 package routers
 
-// func Init(router *gin.Engine) {
-// 	user := router.Group("/user")
-// 	{
+import (
+	"chat/controllers/accounts"
+	"chat/controllers/user"
+	"fmt"
 
-// 	}
-// 	msg := router.Group("/msg")
-// 	{
-// 		//msg.POST("/sendTxtMsg")
-// 	}
-// }
+	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
+)
+
+func Init() {
+	router := gin.Default()
+	user_ := router.Group("/user")
+	{
+		user_.GET("/conversations", user.GetConversations)
+		user_.POST("/register", accounts.Register)
+	}
+	// msg := router.Group("/msg")
+	// {
+	// 	//msg.POST("/sendTxtMsg")
+	// }
+	httpPort := viper.GetString("app.httpPort")
+	fmt.Println("httpPort:", httpPort)
+	router.Run(":8080")
+}
