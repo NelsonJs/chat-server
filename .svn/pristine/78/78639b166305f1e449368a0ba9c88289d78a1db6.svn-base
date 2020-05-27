@@ -80,29 +80,6 @@ func GetUserInfo(uid string) (code int, info *models.UserInfo) {
 	// return -1, nil
 }
 
-func GetChatRecord(selfId, otherId int64) (int, string, []*models.Message) {
-	stmt, err := db.Prepare("select send_id,receive_id,content from msg where send_id=? and receive_id=? or send_id=? and receive_id=?")
-	if err != nil {
-		return -1, err.Error(), nil
-	}
-	defer stmt.Close()
-	rows, err := stmt.Query(selfId, otherId, otherId, selfId)
-	if err != nil {
-		return -1, err.Error(), nil
-	}
-	list_ := make([]*models.Message, 0)
-	for rows.Next() {
-		data := models.Message{}
-		err = rows.Scan(&data.SendId, &data.ReceiveId, &data.Content)
-		if err != nil {
-			return -1, err.Error(), nil
-		}
-		fmt.Println(data.Content)
-		list_ = append(list_, &data)
-	}
-	return 1, "", list_
-}
-
 func Register(userName, pwd string) (code int64, msg string) {
 	stmt, err := db.Prepare("insert into user(nick_name,pwd)values(?,?)")
 	if err != nil {

@@ -2,7 +2,7 @@ package routers
 
 import (
 	"chat/controllers/accounts"
-	"chat/controllers/msg"
+	"chat/controllers/user"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
@@ -13,10 +13,9 @@ func Init() {
 	router := gin.Default()
 	user_ := router.Group("/user")
 	{
-		user_.GET("/conversations", msg.GetConversations)
+		user_.GET("/conversations", user.GetConversations)
 		user_.POST("/register", accounts.Register)
 		user_.POST("/login", accounts.Login)
-		user_.GET("/record", msg.GetChatRecord)
 	}
 	// msg := router.Group("/msg")
 	// {

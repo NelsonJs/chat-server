@@ -36,27 +36,3 @@ func Register(c *gin.Context) {
 	}
 
 }
-
-func Login(c *gin.Context) {
-	var register Registers
-	if err := c.ShouldBindJSON(&register); err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"code": -1,
-			"msg":  err.Error(),
-		})
-		return
-	}
-	code, msg := mysql_serve.Login(register.Username, register.Pwd)
-	if code == -1 || code == -2 {
-		c.JSON(http.StatusOK, gin.H{
-			"code": code,
-			"msg":  msg,
-		})
-	} else {
-		c.JSON(http.StatusOK, gin.H{
-			"uid":      code,
-			"username": register.Username,
-			"pwd":      register.Pwd,
-		})
-	}
-}

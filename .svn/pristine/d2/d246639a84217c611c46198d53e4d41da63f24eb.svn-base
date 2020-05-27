@@ -91,14 +91,13 @@ func GetChatRecord(selfId, otherId int64) (int, string, []*models.Message) {
 		return -1, err.Error(), nil
 	}
 	list_ := make([]*models.Message, 0)
+	data := models.Message{}
 	for rows.Next() {
-		data := models.Message{}
-		err = rows.Scan(&data.SendId, &data.ReceiveId, &data.Content)
+		err = rows.Scan(data.SendId, &data.ReceiveId, &data.Content)
 		if err != nil {
 			return -1, err.Error(), nil
 		}
-		fmt.Println(data.Content)
-		list_ = append(list_, &data)
+		append(list_, data)
 	}
 	return 1, "", list_
 }

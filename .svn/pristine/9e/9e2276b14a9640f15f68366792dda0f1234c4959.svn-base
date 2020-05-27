@@ -1,7 +1,9 @@
 package user
 
 import (
+	"chat/db/mysql_serve"
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,4 +12,12 @@ func SendTxtMsg(c *gin.Context) {
 	uid := c.PostForm("uid")
 	msg := c.PostForm("msg")
 	fmt.Println(uid, "发送消息：", msg)
+}
+
+func GetConversations(c *gin.Context) {
+	uid := c.Query("uid")
+	ids := mysql_serve.GetConversations(uid)
+	c.JSON(http.StatusOK, gin.H{
+		"data": ids,
+	})
 }
