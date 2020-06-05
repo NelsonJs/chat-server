@@ -169,25 +169,3 @@ func Login(userName, pwd string) (code int64, msg string) {
 	fmt.Println("登录成功")
 	return uid, "登录成功"
 }
-
-func NearDynamic() (error, []*models.ResDynamic) {
-	stmt, err := db.Prepare("select * from active")
-	if err != nil {
-		return err, nil
-	}
-	defer stmt.Close()
-	rows, err := stmt.Query()
-	if err != nil {
-		return err, nil
-	}
-	list := make([]*models.ResDynamic, 0)
-	for rows.Next() {
-		bean := models.ResDynamic{}
-		err = rows.Scan(&bean.Id, &bean.Uid, &bean.Title, &bean.Description, &bean.Img, &bean.Gender, &bean.Begin, &bean.Loc, &bean.Lng, &bean.Lat, &bean.People_num, &bean.People_total_num, &bean.Like, &bean.Comment_num, &bean.Comment_id)
-		if err != nil {
-			return err, nil
-		}
-		list = append(list, &bean)
-	}
-	return nil, list
-}

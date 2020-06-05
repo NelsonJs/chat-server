@@ -3,9 +3,7 @@ package websocket
 import (
 	"chat/db/mysql_serve"
 	"chat/models"
-	"encoding/json"
 	"errors"
-	"fmt"
 	"strconv"
 )
 
@@ -31,21 +29,15 @@ func SendTxt(client *Client, reqModel *models.Req) {
 	}
 
 	c := GetUserClient(strconv.FormatInt(reqModel.ReceiveId, 10))
-	if c == nil {
-		return
-	}
-	//保存进数据库
-	mysql_serve.SaveRecord(client.UserId, strconv.FormatInt(reqModel.ReceiveId, 10), reqModel.Content, 0)
-	resMsg := models.ResMsg{
-		SendId:    client.UserId,
-		ReceiveId: strconv.FormatInt(reqModel.ReceiveId, 10),
-		MsgType:   0,
-		Content:   reqModel.Content,
-	}
-	byt, err := json.Marshal(resMsg)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	c.SendMsg([]byte(byt))
+	c.SendMsg([]byte(reqModel.Content))
+	// c := GetUserClient(receiveId)
+	// if c != nil {
+	// 	//client.SendMsg(reqModel.MsgByte)
+	// 	c.SendMsg(reqModel.MsgByte)
+	// } else {
+	// 	res := &models.Res{Code: -1, Msg: "没有找到" + reqModel.OtherUserId}
+	// 	resData, _ := json.Marshal(res)
+	// 	client.SendMsg(resData)
+	// }
+
 }

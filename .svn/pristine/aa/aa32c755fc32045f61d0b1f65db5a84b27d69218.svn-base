@@ -3,5 +3,5 @@ package models
 type Req struct {
 	Cmd string
 	Uid string
-	Message
+	Msg interface{}
 }

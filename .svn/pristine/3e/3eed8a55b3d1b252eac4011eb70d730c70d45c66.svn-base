@@ -1,0 +1,13 @@
+package models
+
+type Res struct {
+	Code int64
+	Msg  string
+}
+
+type ResMsg struct {
+	SendId    string
+	ReceiveId string
+	MsgType   int
+	Content   string
+}

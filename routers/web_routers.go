@@ -3,6 +3,7 @@ package routers
 import (
 	"chat/controllers/accounts"
 	"chat/controllers/msg"
+	"chat/controllers/normal"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
@@ -17,6 +18,10 @@ func Init() {
 		user_.POST("/register", accounts.Register)
 		user_.POST("/login", accounts.Login)
 		user_.GET("/record", msg.GetChatRecord)
+	}
+	index := router.Group("/index")
+	{
+		index.GET("/neardynamic", normal.NearDynamic)
 	}
 	// msg := router.Group("/msg")
 	// {
