@@ -23,6 +23,10 @@ func Init() {
 	{
 		index.GET("/neardynamic", normal.NearDynamic)
 	}
+	resource := router.Group("/resource")
+	{
+		resource.POST("/uploadimg", normal.UploadImg)
+	}
 	// msg := router.Group("/msg")
 	// {
 	// 	//msg.POST("/sendTxtMsg")
