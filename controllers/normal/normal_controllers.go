@@ -33,7 +33,7 @@ func UploadImg(c *gin.Context) {
 	files := form.File["upload"]
 	for _, file := range files {
 		filename := filepath.Base(file.Filename)
-		if err := c.SaveUploadedFile(file, "D:/GoWork/images"+filename); err != nil {
+		if err := c.SaveUploadedFile(file, "D:/GoWork/images/"+filename); err != nil {
 			c.String(http.StatusBadRequest, fmt.Sprintf("get form err:%s", err.Error()))
 			return
 		}
