@@ -31,12 +31,53 @@ func UploadImg(c *gin.Context) {
 		return
 	}
 	files := form.File["upload"]
+	paths := make([]string, 0)
 	for _, file := range files {
 		filename := filepath.Base(file.Filename)
-		if err := c.SaveUploadedFile(file, "D:/GoWork/images/"+filename); err != nil {
+		var path = "D:/GoWork/images/" + filename
+		if err := c.SaveUploadedFile(file, path); err != nil {
 			c.String(http.StatusBadRequest, fmt.Sprintf("get form err:%s", err.Error()))
 			return
+		} else {
+			paths = append(paths, path)
 		}
 	}
-	c.String(http.StatusOK, "上传成功")
+	res, err := mysql_serve.AddImg(paths)
+	if err != nil {
+		c.String(http.StatusOK, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 1,
+		"data": res,
+	})
+}
+
+func UploadOneImg(c *gin.Context) {
+	form, err := c.MultipartForm()
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	files := form.File["upload"]
+	paths := make([]string, 0)
+	for _, file := range files {
+		filename := filepath.Base(file.Filename)
+		var path = "D:/GoWork/images/" + filename
+		if err := c.SaveUploadedFile(file, path); err != nil {
+			c.String(http.StatusBadRequest, fmt.Sprintf("get form err:%s", err.Error()))
+			return
+		} else {
+			paths = append(paths, path)
+		}
+	}
+	res, err := mysql_serve.AddImg(paths)
+	if err != nil {
+		c.String(http.StatusOK, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 1,
+		"data": res,
+	})
 }

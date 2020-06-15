@@ -170,7 +170,7 @@ func Login(userName, pwd string) (code int64, msg string) {
 	return uid, "登录成功"
 }
 
-func NearDynamic() (error, []*models.ResDynamic) {
+func activeList() (error, []*models.ResDynamic) {
 	stmt, err := db.Prepare("select * from active")
 	if err != nil {
 		return err, nil
@@ -190,4 +190,98 @@ func NearDynamic() (error, []*models.ResDynamic) {
 		list = append(list, &bean)
 	}
 	return nil, list
+}
+
+func NearDynamic() (error, []*models.ResDynamic) {
+	stmt, err := db.Prepare("select * from dynamic")
+	if err != nil {
+		return err, nil
+	}
+	defer stmt.Close()
+	rows, err := stmt.Query()
+	if err != nil {
+		return err, nil
+	}
+	list := make([]*models.ResDynamic, 0)
+	for rows.Next() {
+		bean := models.ResDynamic{}
+		err = rows.Scan(&bean.Id, &bean.Uid, &bean.Title, &bean.Img, &bean.Like, &bean.Comment_id, &bean.Loc, &bean.Lat, &bean.Lng, &bean.Time, &bean.Res_img)
+		if err != nil {
+			return err, nil
+		}
+		list = append(list, &bean)
+	}
+	return nil, list
+}
+
+func AddImg(path []string) ([]int64, error) {
+	tx, err := db.Begin()
+	if err != nil {
+		return nil, err
+	}
+	stmt, err := tx.Prepare("insert into imgs(path) value(?)")
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+	var res = make([]int64, 0)
+	for i := 0; i < len(path); i++ {
+		result, err := stmt.Exec(path[i])
+		if err != nil {
+			tx_rollback(err, tx)
+		} else {
+			id, err := result.LastInsertId()
+			if err != nil {
+				fmt.Println("插入出错：", err.Error())
+			} else {
+				res = append(res, id)
+			}
+
+		}
+	}
+	err = tx.Commit()
+	if err != nil {
+		tx_rollback(err, tx)
+		return res[0:0], err
+	}
+	return res, nil
+}
+
+func AddOneImg(path string) (int64, error) {
+	tx, err := db.Begin()
+	if err != nil {
+		return 0, err
+	}
+	stmt, err := tx.Prepare("insert into imgs(path) value(?)")
+	if err != nil {
+		return 0, err
+	}
+	defer stmt.Close()
+	var id int64
+	result, err := stmt.Exec(path)
+	if err != nil {
+		tx_rollback(err, tx)
+	} else {
+		id, err = result.LastInsertId()
+		if err != nil {
+			fmt.Println("插入失败", err.Error())
+		}
+
+	}
+	err = tx.Commit()
+	if err != nil {
+		tx_rollback(err, tx)
+		return 0, err
+	}
+	return id, nil
+}
+
+func tx_rollback(err error, tx *sql.Tx) {
+	if err != nil {
+		err = tx.Rollback()
+		if err != nil {
+			fmt.Println("事务回滚失败")
+			return
+		}
+	}
 }
