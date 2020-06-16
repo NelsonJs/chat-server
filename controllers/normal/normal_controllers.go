@@ -5,6 +5,11 @@ import (
 	"fmt"
 	"net/http"
 	"path/filepath"
+	"strconv"
+	"strings"
+	"time"
+
+	"chat/models"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,15 +36,18 @@ func UploadImg(c *gin.Context) {
 		return
 	}
 	files := form.File["upload"]
+	fmt.Printf("文件个数为：%d\n", len(files))
 	paths := make([]string, 0)
 	for _, file := range files {
 		filename := filepath.Base(file.Filename)
-		var path = "D:/GoWork/images/" + filename
-		if err := c.SaveUploadedFile(file, path); err != nil {
+		fmt.Printf("图片名称为：%s \n",filename)
+		var index = strings.LastIndex(filename,".")
+		var mName = strconv.FormatInt(time.Now().Unix(),10)+filename[index:]
+		if err := c.SaveUploadedFile(file, "D:/GoWork/images/" + mName); err != nil {
 			c.String(http.StatusBadRequest, fmt.Sprintf("get form err:%s", err.Error()))
 			return
 		} else {
-			paths = append(paths, path)
+			paths = append(paths, "http://192.168.1.6:8080/resource/upload/"+mName)
 		}
 	}
 	res, err := mysql_serve.AddImg(paths)
@@ -63,12 +71,12 @@ func UploadOneImg(c *gin.Context) {
 	paths := make([]string, 0)
 	for _, file := range files {
 		filename := filepath.Base(file.Filename)
-		var path = "D:/GoWork/images/" + filename
-		if err := c.SaveUploadedFile(file, path); err != nil {
+		fmt.Printf("图片名称为：%s \n",filename)
+		if err := c.SaveUploadedFile(file, "D:/GoWork/images/" + filename); err != nil {
 			c.String(http.StatusBadRequest, fmt.Sprintf("get form err:%s", err.Error()))
 			return
 		} else {
-			paths = append(paths, path)
+			paths = append(paths, "http://192.168.1.6:8080/resource/upload/"+filename)
 		}
 	}
 	res, err := mysql_serve.AddImg(paths)
@@ -79,5 +87,22 @@ func UploadOneImg(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": 1,
 		"data": res,
+	})
+}
+
+func PublishDynamic(c *gin.Context) {
+	var addDynamic models.PublishDynamic
+	if err := c.ShouldBindJSON(&addDynamic); err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+	code,err := mysql_serve.PublishDynamic(addDynamic.Uid,addDynamic.Title,addDynamic.Ids)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	fmt.Println(code)
+	c.JSON(http.StatusOK,gin.H{
+		"code":code,
 	})
 }

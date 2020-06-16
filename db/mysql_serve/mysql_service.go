@@ -3,6 +3,7 @@ package mysql_serve
 import (
 	"chat/models"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -193,7 +194,7 @@ func activeList() (error, []*models.ResDynamic) {
 }
 
 func NearDynamic() (error, []*models.ResDynamic) {
-	stmt, err := db.Prepare("select * from dynamic")
+	stmt, err := db.Prepare("select * from dynamic order by time desc")
 	if err != nil {
 		return err, nil
 	}
@@ -212,6 +213,80 @@ func NearDynamic() (error, []*models.ResDynamic) {
 		list = append(list, &bean)
 	}
 	return nil, list
+}
+
+func PublishDynamic(uid string,title string,imgIds []int64) (int64,error) {
+	tx,err := db.Begin()
+	if err != nil {
+		return 0, err
+	}
+	var queryStr string
+
+	queryCon := make([]int64,0)
+	for i:=0; i< len(imgIds);i++ {
+		if i < len(imgIds)-1 {
+			queryStr += "id=? or "
+		} else {
+			queryStr += "id=?"
+		}
+		queryCon = append(queryCon,imgIds[i])
+	}
+	fmt.Printf("id个数: %d 查询语句：%s 查询参数：%s ",len(imgIds),queryStr,queryCon)
+	stmt,err := tx.Prepare("select path from imgs where "+queryStr)
+	if err != nil {
+		return 0, err
+	}
+	defer stmt.Close()
+	var rows *sql.Rows
+	if len(queryCon) == 1 {
+		rows,err = stmt.Query(queryCon[0])
+	} else if len(queryCon) == 2 {
+		rows,err = stmt.Query(queryCon[0],queryCon[1])
+	} else if len(queryCon) == 3 {
+		rows,err = stmt.Query(queryCon[0],queryCon[1],queryCon[2])
+	} else if len(queryCon) == 4 {
+		rows,err = stmt.Query(queryCon[0],queryCon[1],queryCon[2],queryCon[3])
+	} else if len(queryCon) == 5 {
+		rows,err = stmt.Query(queryCon[0],queryCon[1],queryCon[2],queryCon[3],queryCon[4])
+	} else if len(queryCon) == 6 {
+		rows,err = stmt.Query(queryCon[0],queryCon[1],queryCon[2],queryCon[3],queryCon[4],queryCon[5])
+	} else if len(queryCon) == 7 {
+		rows,err = stmt.Query(queryCon[0],queryCon[1],queryCon[2],queryCon[3],queryCon[4],queryCon[5],queryCon[6])
+	} else if len(queryCon) == 8 {
+		rows,err = stmt.Query(queryCon[0],queryCon[1],queryCon[2],queryCon[3],queryCon[4],queryCon[5],queryCon[6],queryCon[7])
+	} else if len(queryCon) == 9 {
+		rows,err = stmt.Query(queryCon[0],queryCon[1],queryCon[2],queryCon[3],queryCon[4],queryCon[5],queryCon[6],queryCon[7],queryCon[8])
+	}
+
+	if err != nil {
+		fmt.Printf("查询语句错误：%s \n",err.Error())
+		return 0, err
+	}
+	var path string
+	paths := make([]string,0)
+	for rows.Next() {
+		err = rows.Scan(&path)
+		if err != nil {
+			fmt.Println("查询出错：",err.Error())
+		} else {
+			fmt.Println("图片地址--》",path)
+			paths = append(paths,path)
+		}
+	}
+	stmt,err = db.Prepare("insert into dynamic(uid,title,time,res_img)values(?,?,?,?)")
+	if err != nil {
+		return 0, err
+	}
+	defer stmt.Close()
+	byt,err := json.Marshal(paths)
+	if err != nil {
+		return 0,err
+	}
+	result,err := stmt.Exec(uid,title,time.Now().Unix(),byt)
+	if err != nil  {
+		return 0, err
+	}
+	return result.LastInsertId()
 }
 
 func AddImg(path []string) ([]int64, error) {
@@ -247,34 +322,6 @@ func AddImg(path []string) ([]int64, error) {
 	return res, nil
 }
 
-func AddOneImg(path string) (int64, error) {
-	tx, err := db.Begin()
-	if err != nil {
-		return 0, err
-	}
-	stmt, err := tx.Prepare("insert into imgs(path) value(?)")
-	if err != nil {
-		return 0, err
-	}
-	defer stmt.Close()
-	var id int64
-	result, err := stmt.Exec(path)
-	if err != nil {
-		tx_rollback(err, tx)
-	} else {
-		id, err = result.LastInsertId()
-		if err != nil {
-			fmt.Println("插入失败", err.Error())
-		}
-
-	}
-	err = tx.Commit()
-	if err != nil {
-		tx_rollback(err, tx)
-		return 0, err
-	}
-	return id, nil
-}
 
 func tx_rollback(err error, tx *sql.Tx) {
 	if err != nil {

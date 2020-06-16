@@ -5,6 +5,7 @@ import (
 	"chat/controllers/msg"
 	"chat/controllers/normal"
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -22,9 +23,11 @@ func Init() {
 	index := router.Group("/index")
 	{
 		index.GET("/neardynamic", normal.NearDynamic)
+		index.POST("/dynamic", normal.PublishDynamic)
 	}
 	resource := router.Group("/resource")
 	{
+		resource.StaticFS("/upload",http.Dir("D:\\GoWork\\images"))
 		resource.POST("/uploadimg", normal.UploadImg)
 	}
 	// msg := router.Group("/msg")
