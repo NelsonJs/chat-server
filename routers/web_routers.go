@@ -19,6 +19,7 @@ func Init() {
 		user_.POST("/register", accounts.Register)
 		user_.POST("/login", accounts.Login)
 		user_.GET("/record", msg.GetChatRecord)
+		user_.POST("/avatar",accounts.UploadAvatar)
 	}
 	index := router.Group("/index")
 	{

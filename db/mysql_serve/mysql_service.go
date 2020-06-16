@@ -289,6 +289,19 @@ func PublishDynamic(uid string,title string,imgIds []int64) (int64,error) {
 	return result.LastInsertId()
 }
 
+func UploadAvatar(path string) (int64, error) {
+	stmt, err := db.Prepare("insert into imgs(path) value(?)")
+	if err != nil {
+		return 0, err
+	}
+	defer stmt.Close()
+	result,err := stmt.Exec(path)
+	if err != nil {
+		return 0, err
+	}
+	return result.LastInsertId()
+}
+
 func AddImg(path []string) ([]int64, error) {
 	tx, err := db.Begin()
 	if err != nil {

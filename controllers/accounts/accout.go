@@ -2,9 +2,11 @@ package accounts
 
 import (
 	"chat/db/mysql_serve"
-	"net/http"
-
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"path/filepath"
+	"strings"
 )
 
 type Registers struct {
@@ -59,4 +61,39 @@ func Login(c *gin.Context) {
 			"pwd":      register.Pwd,
 		})
 	}
+}
+
+func UploadAvatar(c *gin.Context) {
+	var uid = c.Query("uid")
+	fmt.Printf("uid--->%s\n",uid)
+	head,err := c.FormFile("upload")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"code":-1,
+			"msg":err.Error(),
+		})
+		return
+	}
+	fmt.Printf("头像名称：%s \n",head.Filename)
+	filename := filepath.Base(head.Filename)
+	var index = strings.LastIndex(filename,".")
+	var mName = uid+filename[index:]
+	var path string
+	if err = c.SaveUploadedFile(head,"D:/GoWork/images/" + mName); err != nil {
+		c.String(http.StatusBadRequest, fmt.Sprintf("get form err:%s", err.Error()))
+		return
+	} else {
+		path = "http://192.168.1.6:8080/resource/upload/"+mName
+	}
+	code,err := mysql_serve.UploadAvatar(path)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"code":-1,
+			"msg":err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK,gin.H{
+		"code":code,
+	})
 }
