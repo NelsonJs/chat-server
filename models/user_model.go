@@ -9,5 +9,13 @@ type LoginModel struct {
 type UserInfo struct {
 	Uid      string `json:"uid"`
 	UserName string `json:"nick_name"`
-	Gender   int    `json:"gender"`
+	Phone string `json:"phone"`
+	Gender   string    `json:"gender"`
+}
+
+type UserInfo_ struct {
+	Uid      string `json:"uid"`
+	Nick_name string `json:"nick_name"`
+	Phone string `json:"phone"`
+	Gender   string    `json:"gender"`
 }

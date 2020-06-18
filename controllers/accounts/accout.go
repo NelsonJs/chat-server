@@ -2,6 +2,7 @@ package accounts
 
 import (
 	"chat/db/mysql_serve"
+	"chat/models"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -61,6 +62,35 @@ func Login(c *gin.Context) {
 			"pwd":      register.Pwd,
 		})
 	}
+}
+
+func ModifyInfo(c *gin.Context) {
+	var user models.UserInfo_
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusOK,gin.H{
+			"code":-1,
+			"msg":"解析异常",
+		})
+		return
+	}
+	if user.Uid == "" {
+		c.JSON(http.StatusOK,gin.H{
+			"code":-1,
+			"msg":"uid不存在",
+		})
+		return
+	}
+	code,err := mysql_serve.UpdateUser(user.Uid,user.Nick_name,user.Phone,user.Gender)
+	if err != nil {
+		c.JSON(http.StatusOK,gin.H{
+			"code":-1,
+			"msg":err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK,gin.H{
+		"code":code,
+	})
 }
 
 func UploadAvatar(c *gin.Context) {

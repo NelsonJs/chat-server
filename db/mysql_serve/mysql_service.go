@@ -4,6 +4,7 @@ import (
 	"chat/models"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
@@ -344,4 +345,31 @@ func tx_rollback(err error, tx *sql.Tx) {
 			return
 		}
 	}
+}
+
+func UpdateUser(uid,nickname,phone, gender string) (int64,error) {
+	if nickname != ""{
+		return updateUserMethod("nick_name",nickname,uid)
+	} else if phone != "" {
+		return updateUserMethod("phone",phone,uid)
+	} else if gender != "" {
+		return updateUserMethod("gender",gender,uid)
+	}
+	return -1,errors.New("非法修改")
+}
+
+func updateUserMethod (field,value,uid string) (int64,error) {
+	fmt.Println("filed->",field," value-->",value," uid-->",uid)
+	stmt,err := db.Prepare("update user set "+field+" = ? where uid = ?")
+	if err != nil {
+		return -1,err
+	}
+	defer stmt.Close()
+	result,err := stmt.Exec(value,uid)
+	if err != nil {
+		return -1,err
+	}
+	code,err := result.RowsAffected()
+	fmt.Println("code-->",code,"---",err.Error())
+	return result.RowsAffected()
 }
