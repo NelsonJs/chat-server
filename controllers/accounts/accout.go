@@ -158,6 +158,13 @@ func PublishLoveIntro(c *gin.Context) {
 	curLoc := c.PostForm("curLoc")
 	jiGuan := c.PostForm("jiGuan")
 	loveWord := c.PostForm("loveWord")
+	if uid == "" || name == "" || gender == "" || yearsOld == "" || shenGao == "" || tiZhong == "" || habit == "" || xueLi == "" || job == "" || curLoc == "" || jiGuan == "" || loveWord == ""{
+		c.JSON(http.StatusOK,gin.H{
+			"code":-1,
+			"msg":"参数不全",
+		})
+		return
+	}
 	code,err := mysql_serve.AddIntro(uid,path,name,gender,yearsOld,shenGao,tiZhong,habit,xueLi,job,curLoc,jiGuan,loveWord)
 	if err != nil {
 		c.JSON(http.StatusOK,gin.H{
