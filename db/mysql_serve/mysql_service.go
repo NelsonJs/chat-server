@@ -194,7 +194,7 @@ func activeList() (error, []*models.ResDynamic) {
 	return nil, list
 }
 
-func NearDynamic() (error, []*models.ResDynamic) {
+/*func NearDynamic() (error, []*models.ResDynamic) {
 	stmt, err := db.Prepare("select * from dynamic order by time desc")
 	if err != nil {
 		return err, nil
@@ -208,6 +208,28 @@ func NearDynamic() (error, []*models.ResDynamic) {
 	for rows.Next() {
 		bean := models.ResDynamic{}
 		err = rows.Scan(&bean.Id, &bean.Uid, &bean.Title, &bean.Img, &bean.Like, &bean.Comment_id, &bean.Loc, &bean.Lat, &bean.Lng, &bean.Time, &bean.Res_img)
+		if err != nil {
+			return err, nil
+		}
+		list = append(list, &bean)
+	}
+	return nil, list
+}*/
+
+func NearDynamic() (error, []*models.ResDynamic) {
+	stmt, err := db.Prepare("select d.*, u.* from dynamic d inner join user u on d.uid = u.uid order by time desc")
+	if err != nil {
+		return err, nil
+	}
+	defer stmt.Close()
+	rows, err := stmt.Query()
+	if err != nil {
+		return err, nil
+	}
+	list := make([]*models.ResDynamic, 0)
+	for rows.Next() {
+		bean := models.ResDynamic{}
+		err = rows.Scan(&bean.Id, &bean.Uid, &bean.Title, &bean.Img, &bean.Like, &bean.Comment_id, &bean.Loc, &bean.Lat, &bean.Lng, &bean.Time, &bean.Res_img,&bean.Uid,&bean.Nick_name,&bean.Pwd,&bean.Phone,&bean.Gender,&bean.Avatar,&bean.Create_time,&bean.Login_time,&bean.Logout_time,&bean.Status,&bean.Year_old)
 		if err != nil {
 			return err, nil
 		}
@@ -290,17 +312,35 @@ func PublishDynamic(uid string,title string,imgIds []int64) (int64,error) {
 	return result.LastInsertId()
 }
 
-func UploadAvatar(path string) (int64, error) {
-	stmt, err := db.Prepare("insert into imgs(path) value(?)")
+func UploadAvatar(uid,path string) (int64, error) {
+	tx,err := db.Begin()
 	if err != nil {
-		return 0, err
+		return -1, err
+	}
+	stmt, err := tx.Prepare("insert into imgs(path) value(?)")
+	if err != nil {
+		return -1, err
 	}
 	defer stmt.Close()
 	result,err := stmt.Exec(path)
 	if err != nil {
-		return 0, err
+		return -1, err
 	}
-	return result.LastInsertId()
+	stmt, err = tx.Prepare("update user set avatar = ? where uid = ?")
+	if err != nil {
+		return -1, err
+	}
+	defer stmt.Close()
+	result,err = stmt.Exec(path,uid)
+	if err != nil {
+		return -1, err
+	}
+	err = tx.Commit()
+	if err != nil {
+		tx_rollback(err, tx)
+		return -1, err
+	}
+	return result.RowsAffected()
 }
 
 func AddImg(path []string) ([]int64, error) {
@@ -370,6 +410,23 @@ func updateUserMethod (field,value,uid string) (int64,error) {
 		return -1,err
 	}
 	code,err := result.RowsAffected()
-	fmt.Println("code-->",code,"---",err.Error())
+	if err != nil{
+		fmt.Println(err.Error())
+		return -1, err
+	}
+	fmt.Println("code---->",code)
 	return result.RowsAffected()
+}
+
+func AddIntro(uid, imgPath, name, gender, yearsOld, shenGao, tiZhong, habit, xueLi, job, curLoc, jiGuan, loveWord string) (int64,error) {
+	stmt,err := db.Prepare("insert into intro value(uid,nickname,img_path,gender,years_old,habit,jiguan,curlocal,xueli,job,shengao,tizhong,love_word)values(?,?,?,?,?,?,?,?,?,?,?,?)")
+	if err != nil {
+		return -1,err
+	}
+	defer stmt.Close()
+	result,err := stmt.Exec(uid,name,imgPath,gender,yearsOld,habit,jiGuan,curLoc,xueLi,job,shenGao,tiZhong,loveWord)
+	if err != nil {
+		return -1,err
+	}
+	return result.LastInsertId()
 }
