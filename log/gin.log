@@ -1,0 +1,20 @@
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /user/conversations       --> chat/controllers/msg.GetConversations (3 handlers)
+[GIN-debug] POST   /user/register            --> chat/controllers/accounts.Register (3 handlers)
+[GIN-debug] POST   /user/login               --> chat/controllers/accounts.Login (3 handlers)
+[GIN-debug] GET    /user/record              --> chat/controllers/msg.GetChatRecord (3 handlers)
+[GIN-debug] POST   /user/avatar              --> chat/controllers/accounts.UploadAvatar (3 handlers)
+[GIN-debug] POST   /user/modify              --> chat/controllers/accounts.ModifyInfo (3 handlers)
+[GIN-debug] GET    /index/neardynamic        --> chat/controllers/normal.NearDynamic (3 handlers)
+[GIN-debug] POST   /index/dynamic            --> chat/controllers/normal.PublishDynamic (3 handlers)
+[GIN-debug] POST   /index/loveintro          --> chat/controllers/accounts.PublishLoveIntro (3 handlers)
+[GIN-debug] GET    /resource/upload/*filepath --> github.com/gin-gonic/gin.(*RouterGroup).createStaticHandler.func1 (3 handlers)
+[GIN-debug] HEAD   /resource/upload/*filepath --> github.com/gin-gonic/gin.(*RouterGroup).createStaticHandler.func1 (3 handlers)
+[GIN-debug] POST   /resource/uploadimg       --> chat/controllers/normal.UploadImg (3 handlers)
+[GIN-debug] GET    /api/*any                 --> github.com/swaggo/gin-swagger.CustomWrapHandler.func1 (3 handlers)
+[GIN-debug] Listening and serving HTTP on :8080

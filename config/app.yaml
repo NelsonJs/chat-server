@@ -1,5 +1,5 @@
 app:
-  logFile: log/gin.log
+  logFile: D:/GoWork/chat/log/gin.log
   httpPort: 8080
   webSocketPort: 7979
   httpUrl: 127.0.0.1:8080

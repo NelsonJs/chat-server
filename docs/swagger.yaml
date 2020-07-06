@@ -1,0 +1,15 @@
+basePath: /user
+host: localhost:8080  //跟BasePath一样的显示效果
+info:
+  contact:
+    email: youngxhui@g mail.com 邮箱
+    name: youngxhu 名字
+    url: https://youngxhui.top 网址
+  description: swagger测试显示restful api  //说明信息
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: 我的DEMO API
+  version: 1.0     //当前api版本
+paths: {}
+swagger: "2.0"

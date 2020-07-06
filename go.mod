@@ -3,19 +3,14 @@ module chat
 go 1.12
 
 require (
+	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/gorilla/websocket v1.4.2
-	github.com/josharian/impl v0.0.0-20191119165012-6b9658ad00c7 // indirect
-	github.com/ramya-rao-a/go-outline v0.0.0-20200117021646-2a048b4510eb // indirect
 	github.com/spf13/viper v1.6.3
-	github.com/stamblerre/gocode v1.0.0 // indirect
-	github.com/uudashr/gopkgs/v2 v2.1.2 // indirect
-	github.com/yuin/goldmark v1.1.30 // indirect
-	github.com/zmb3/gogetdoc v0.0.0-20190228002656-b37376c5da6a // indirect
-	golang.org/x/crypto v0.0.0-20200429183012-4b2356b1ed79 // indirect
-	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a // indirect
-	golang.org/x/sys v0.0.0-20200501145240-bc7a7d42d5c3 // indirect
-	golang.org/x/tools v0.0.0-20200505023115-26f46d2f7ef8 // indirect
+	github.com/streadway/amqp v1.0.0
+	github.com/swaggo/gin-swagger v1.2.0
+	github.com/swaggo/swag v1.6.7
+//golang.org/x/tools v0.0.0-20200505023115-26f46d2f7ef8 // indirect
 )

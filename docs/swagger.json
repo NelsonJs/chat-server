@@ -1,0 +1,20 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "swagger测试显示restful api  //说明信息",
+        "title": "我的DEMO API",
+        "contact": {
+            "name": "youngxhu 名字",
+            "url": "https://youngxhui.top 网址",
+            "email": "youngxhui@g mail.com 邮箱"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0     //当前api版本"
+    },
+    "host": "localhost:8080  //跟BasePath一样的显示效果",
+    "basePath": "/user",
+    "paths": {}
+}
