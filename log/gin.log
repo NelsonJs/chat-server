@@ -18,3 +18,16 @@
 [GIN-debug] POST   /resource/uploadimg       --> chat/controllers/normal.UploadImg (3 handlers)
 [GIN-debug] GET    /api/*any                 --> github.com/swaggo/gin-swagger.CustomWrapHandler.func1 (3 handlers)
 [GIN-debug] Listening and serving HTTP on :8080
+[GIN] 2020/07/06 - 15:22:27 | 200 |       996.9µs |             ::1 | GET      "/api/index.html"
+[GIN] 2020/07/06 - 15:22:27 | 200 |            0s |             ::1 | GET      "/api/swagger-ui.css"
+[GIN] 2020/07/06 - 15:22:27 | 200 |      1.0003ms |             ::1 | GET      "/api/swagger-ui-standalone-preset.js"
+[GIN] 2020/07/06 - 15:22:27 | 200 |      3.0043ms |             ::1 | GET      "/api/swagger-ui-bundle.js"
+[GIN] 2020/07/06 - 15:22:27 | 200 |       999.8µs |             ::1 | GET      "/api/doc.json"
+[GIN] 2020/07/06 - 15:22:27 | 200 |    119.9973ms |             ::1 | GET      "/api/favicon-32x32.png"
+[GIN] 2020/07/06 - 15:22:54 | 200 |     35.0005ms |             ::1 | POST     "/user/register"
+[GIN] 2020/07/06 - 15:36:48 | 200 |            0s |             ::1 | GET      "/api/index.html"
+[GIN] 2020/07/06 - 15:36:48 | 304 |            0s |             ::1 | GET      "/api/swagger-ui.css"
+[GIN] 2020/07/06 - 15:36:48 | 304 |            0s |             ::1 | GET      "/api/swagger-ui-bundle.js"
+[GIN] 2020/07/06 - 15:36:48 | 304 |            0s |             ::1 | GET      "/api/swagger-ui-standalone-preset.js"
+[GIN] 2020/07/06 - 15:36:48 | 200 |            0s |             ::1 | GET      "/api/doc.json"
+[GIN] 2020/07/06 - 15:36:48 | 200 |            0s |             ::1 | GET      "/api/favicon-32x32.png"

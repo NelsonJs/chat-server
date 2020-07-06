@@ -17,6 +17,15 @@ type Registers struct {
 	Pwd      string `json:"pwd"`
 }
 
+// @Summary 注册
+// @Id 1
+// @Tags 账号
+// @version 1.0
+// @Accept json
+// @Param account body Registers true "Add account"
+// @Success 200 object res.Register 成功后返回值
+// @Failure 500 {object} res.Fail
+// @Router /user/register [post]
 func Register(c *gin.Context) {
 	var register Registers
 	if err := c.ShouldBindJSON(&register); err != nil {

@@ -8,7 +8,6 @@ import (
 	"chat/service/websocket"
 
 	"chat/models"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,6 +33,14 @@ func SendTxtMsg(c *gin.Context) {
 	}
 }
 
+// @Summary 会话列表接口
+// @Id 1
+// @Tags 聊天
+// @version 1.0
+// @Accept json
+// @Param uid query string true "用户id"
+// @Success 200 object res.Conversation 成功后返回值
+// @Router /user/conversations [get]                  //只有使用了该注释，才会显示api文档
 func GetConversations(c *gin.Context) {
 	uid := c.Query("uid")
 	ids := mysql_serve.GetConversations(uid)
@@ -47,6 +54,16 @@ type chat struct {
 	otherId int64
 }
 
+// @Summary 获取聊天记录
+// @Id 1
+// @Tags 聊天
+// @version 1.0
+// @Accept json
+// @Param selfId query string true "自己的uid"
+// @Param otherId query string true "对方的uid"
+// @Success 200 object res.ChatRecord 成功后返回值
+// @Failure 500 {object} res.ChatRecord
+// @Router /user/record [get]
 func GetChatRecord(c *gin.Context) {
 	// ch := chat{}
 	// if err := c.ShouldBindJSON(&ch); err != nil {

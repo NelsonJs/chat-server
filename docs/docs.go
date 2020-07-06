@@ -19,9 +19,9 @@ var doc = `{
         "description": "{{.Description}}",
         "title": "{{.Title}}",
         "contact": {
-            "name": "youngxhu 名字",
-            "url": "https://youngxhui.top 网址",
-            "email": "youngxhui@g mail.com 邮箱"
+            "name": "pjsong",
+            "url": "xxx 网址",
+            "email": "18320944165@163.com 邮箱"
         },
         "license": {
             "name": "Apache 2.0",
@@ -31,7 +31,199 @@ var doc = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/user/conversations": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "聊天"
+                ],
+                "summary": "会话列表接口",
+                "operationId": "1",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户id",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Conversation"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/record": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "聊天"
+                ],
+                "summary": "获取聊天记录",
+                "operationId": "1",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "自己的uid",
+                        "name": "selfId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "对方的uid",
+                        "name": "otherId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.ChatRecord"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.ChatRecord"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/register": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "账号"
+                ],
+                "summary": "注册",
+                "operationId": "1",
+                "parameters": [
+                    {
+                        "description": "Add account",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/accounts.Registers"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Register"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.Fail"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "accounts.Registers": {
+            "type": "object",
+            "properties": {
+                "pwd": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UserInfo": {
+            "type": "object",
+            "properties": {
+                "gender": {
+                    "type": "integer"
+                },
+                "nick_name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "uid": {
+                    "type": "string"
+                }
+            }
+        },
+        "res.ChatRecord": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "res.Conversation": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.UserInfo"
+                    }
+                }
+            }
+        },
+        "res.Fail": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "res.Register": {
+            "type": "object",
+            "properties": {
+                "pwd": {
+                    "type": "string"
+                },
+                "uid": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        }
+    }
 }`
 
 type swaggerInfo struct {
@@ -45,12 +237,12 @@ type swaggerInfo struct {
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
-	Version:     "1.0     //当前api版本",
-	Host:        "localhost:8080  //跟BasePath一样的显示效果",
-	BasePath:    "/user",
+	Version:     "1.0",
+	Host:        "localhost:8080",
+	BasePath:    "",
 	Schemes:     []string{},
-	Title:       "我的DEMO API",
-	Description: "swagger测试显示restful api  //说明信息",
+	Title:       "微聊 API",
+	Description: "不定时更新",
 }
 
 type s struct{}

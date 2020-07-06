@@ -1,15 +1,138 @@
-basePath: /user
-host: localhost:8080  //跟BasePath一样的显示效果
+definitions:
+  accounts.Registers:
+    properties:
+      pwd:
+        type: string
+      username:
+        type: string
+    type: object
+  models.UserInfo:
+    properties:
+      gender:
+        type: integer
+      nick_name:
+        type: string
+      phone:
+        type: string
+      uid:
+        type: string
+    type: object
+  res.ChatRecord:
+    properties:
+      code:
+        type: integer
+      data:
+        items:
+          type: object
+        type: array
+      msg:
+        type: string
+    type: object
+  res.Conversation:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.UserInfo'
+        type: array
+    type: object
+  res.Fail:
+    properties:
+      code:
+        type: integer
+      msg:
+        type: string
+    type: object
+  res.Register:
+    properties:
+      pwd:
+        type: string
+      uid:
+        type: integer
+      username:
+        type: string
+    type: object
+host: localhost:8080
 info:
   contact:
-    email: youngxhui@g mail.com 邮箱
-    name: youngxhu 名字
-    url: https://youngxhui.top 网址
-  description: swagger测试显示restful api  //说明信息
+    email: 18320944165@163.com 邮箱
+    name: pjsong
+    url: xxx 网址
+  description: 不定时更新
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  title: 我的DEMO API
-  version: 1.0     //当前api版本
-paths: {}
+  title: 微聊 API
+  version: "1.0"
+paths:
+  /user/conversations:
+    get:
+      consumes:
+      - application/json
+      operationId: "1"
+      parameters:
+      - description: 用户id
+        in: query
+        name: uid
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Conversation'
+      summary: 会话列表接口
+      tags:
+      - 聊天
+  /user/record:
+    get:
+      consumes:
+      - application/json
+      operationId: "1"
+      parameters:
+      - description: 自己的uid
+        in: query
+        name: selfId
+        required: true
+        type: string
+      - description: 对方的uid
+        in: query
+        name: otherId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.ChatRecord'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ChatRecord'
+      summary: 获取聊天记录
+      tags:
+      - 聊天
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      operationId: "1"
+      parameters:
+      - description: Add account
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/accounts.Registers'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Register'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.Fail'
+      summary: 注册
+      tags:
+      - 账号
 swagger: "2.0"

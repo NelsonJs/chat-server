@@ -12,16 +12,16 @@ import (
 
 var redisManager *redis_serve.RedisManager
 
-// @title 我的DEMO API
-// @version 1.0     //当前api版本
-// @description  swagger测试显示restful api  //说明信息
-// @BasePath /user
-// @contact.name youngxhu 名字
-// @contact.url https://youngxhui.top 网址
-// @contact.email youngxhui@g mail.com 邮箱
+// @title 微聊 API
+// @version 1.0
+// @description 不定时更新
+// @BasePath
+// @contact.name pjsong
+// @contact.url xxx 网址
+// @contact.email 18320944165@163.com 邮箱
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-// @host localhost:8080  //跟BasePath一样的显示效果
+// @host localhost:8080
 func main() {
 	initConfig()
 	routers.InitScocketRouters()
