@@ -31,10 +31,8 @@ func main() {
 	routers.Init()
 }
 
-
-
 func initConfig() {
-	viper.SetConfigName("config/app")
+	viper.SetConfigName("./config/app.yaml")
 	viper.AddConfigPath(".")
 
 	err := viper.ReadInConfig()

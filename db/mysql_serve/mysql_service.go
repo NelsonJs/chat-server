@@ -15,7 +15,7 @@ var db *sql.DB
 
 func InitMySQL() {
 	var err error
-	db, err = sql.Open("mysql", "root:6678510jk@tcp(127.0.0.1:3306)/demo?charset=utf8mb4")
+	db, err = sql.Open("mysql", "root:123456@tcp(tmysql:3306)/demo?charset=utf8mb4")
 	if err != nil {
 		fmt.Println("打开数据库连接失败", err)
 		return
@@ -229,7 +229,7 @@ func NearDynamic() (error, []*models.ResDynamic) {
 	list := make([]*models.ResDynamic, 0)
 	for rows.Next() {
 		bean := models.ResDynamic{}
-		err = rows.Scan(&bean.Id, &bean.Uid, &bean.Title, &bean.Img, &bean.Like, &bean.Comment_id, &bean.Loc, &bean.Lat, &bean.Lng, &bean.Time, &bean.Res_img,&bean.Uid,&bean.Nick_name,&bean.Pwd,&bean.Phone,&bean.Gender,&bean.Avatar,&bean.Create_time,&bean.Login_time,&bean.Logout_time,&bean.Status,&bean.Year_old)
+		err = rows.Scan(&bean.Id, &bean.Uid, &bean.Title, &bean.Img, &bean.Like, &bean.Comment_id, &bean.Loc, &bean.Lat, &bean.Lng, &bean.Time, &bean.Res_img, &bean.Uid, &bean.Nick_name, &bean.Pwd, &bean.Phone, &bean.Gender, &bean.Avatar, &bean.Create_time, &bean.Login_time, &bean.Logout_time, &bean.Status, &bean.Year_old)
 		if err != nil {
 			return err, nil
 		}
@@ -238,82 +238,82 @@ func NearDynamic() (error, []*models.ResDynamic) {
 	return nil, list
 }
 
-func PublishDynamic(uid string,title string,imgIds []int64) (int64,error) {
-	tx,err := db.Begin()
+func PublishDynamic(uid string, title string, imgIds []int64) (int64, error) {
+	tx, err := db.Begin()
 	if err != nil {
 		return 0, err
 	}
 	var queryStr string
 
-	queryCon := make([]int64,0)
-	for i:=0; i< len(imgIds);i++ {
+	queryCon := make([]int64, 0)
+	for i := 0; i < len(imgIds); i++ {
 		if i < len(imgIds)-1 {
 			queryStr += "id=? or "
 		} else {
 			queryStr += "id=?"
 		}
-		queryCon = append(queryCon,imgIds[i])
+		queryCon = append(queryCon, imgIds[i])
 	}
-	fmt.Printf("id个数: %d 查询语句：%s 查询参数：%s ",len(imgIds),queryStr,queryCon)
-	stmt,err := tx.Prepare("select path from imgs where "+queryStr)
+	fmt.Printf("id个数: %d 查询语句：%s 查询参数：%s ", len(imgIds), queryStr, queryCon)
+	stmt, err := tx.Prepare("select path from imgs where " + queryStr)
 	if err != nil {
 		return 0, err
 	}
 	defer stmt.Close()
 	var rows *sql.Rows
 	if len(queryCon) == 1 {
-		rows,err = stmt.Query(queryCon[0])
+		rows, err = stmt.Query(queryCon[0])
 	} else if len(queryCon) == 2 {
-		rows,err = stmt.Query(queryCon[0],queryCon[1])
+		rows, err = stmt.Query(queryCon[0], queryCon[1])
 	} else if len(queryCon) == 3 {
-		rows,err = stmt.Query(queryCon[0],queryCon[1],queryCon[2])
+		rows, err = stmt.Query(queryCon[0], queryCon[1], queryCon[2])
 	} else if len(queryCon) == 4 {
-		rows,err = stmt.Query(queryCon[0],queryCon[1],queryCon[2],queryCon[3])
+		rows, err = stmt.Query(queryCon[0], queryCon[1], queryCon[2], queryCon[3])
 	} else if len(queryCon) == 5 {
-		rows,err = stmt.Query(queryCon[0],queryCon[1],queryCon[2],queryCon[3],queryCon[4])
+		rows, err = stmt.Query(queryCon[0], queryCon[1], queryCon[2], queryCon[3], queryCon[4])
 	} else if len(queryCon) == 6 {
-		rows,err = stmt.Query(queryCon[0],queryCon[1],queryCon[2],queryCon[3],queryCon[4],queryCon[5])
+		rows, err = stmt.Query(queryCon[0], queryCon[1], queryCon[2], queryCon[3], queryCon[4], queryCon[5])
 	} else if len(queryCon) == 7 {
-		rows,err = stmt.Query(queryCon[0],queryCon[1],queryCon[2],queryCon[3],queryCon[4],queryCon[5],queryCon[6])
+		rows, err = stmt.Query(queryCon[0], queryCon[1], queryCon[2], queryCon[3], queryCon[4], queryCon[5], queryCon[6])
 	} else if len(queryCon) == 8 {
-		rows,err = stmt.Query(queryCon[0],queryCon[1],queryCon[2],queryCon[3],queryCon[4],queryCon[5],queryCon[6],queryCon[7])
+		rows, err = stmt.Query(queryCon[0], queryCon[1], queryCon[2], queryCon[3], queryCon[4], queryCon[5], queryCon[6], queryCon[7])
 	} else if len(queryCon) == 9 {
-		rows,err = stmt.Query(queryCon[0],queryCon[1],queryCon[2],queryCon[3],queryCon[4],queryCon[5],queryCon[6],queryCon[7],queryCon[8])
+		rows, err = stmt.Query(queryCon[0], queryCon[1], queryCon[2], queryCon[3], queryCon[4], queryCon[5], queryCon[6], queryCon[7], queryCon[8])
 	}
 
 	if err != nil {
-		fmt.Printf("查询语句错误：%s \n",err.Error())
+		fmt.Printf("查询语句错误：%s \n", err.Error())
 		return 0, err
 	}
 	var path string
-	paths := make([]string,0)
+	paths := make([]string, 0)
 	for rows.Next() {
 		err = rows.Scan(&path)
 		if err != nil {
-			fmt.Println("查询出错：",err.Error())
+			fmt.Println("查询出错：", err.Error())
 		} else {
-			fmt.Println("图片地址--》",path)
-			paths = append(paths,path)
+			fmt.Println("图片地址--》", path)
+			paths = append(paths, path)
 		}
 	}
-	stmt,err = db.Prepare("insert into dynamic(uid,title,time,res_img)values(?,?,?,?)")
+	stmt, err = db.Prepare("insert into dynamic(uid,title,time,res_img)values(?,?,?,?)")
 	if err != nil {
 		return 0, err
 	}
 	defer stmt.Close()
-	byt,err := json.Marshal(paths)
+	byt, err := json.Marshal(paths)
 	if err != nil {
-		return 0,err
+		return 0, err
 	}
-	result,err := stmt.Exec(uid,title,time.Now().Unix(),byt)
-	if err != nil  {
+	result, err := stmt.Exec(uid, title, time.Now().Unix(), byt)
+	if err != nil {
 		return 0, err
 	}
 	return result.LastInsertId()
 }
 
-func UploadAvatar(uid,path string) (int64, error) {
-	tx,err := db.Begin()
+func UploadAvatar(uid, path string) (int64, error) {
+	tx, err := db.Begin()
 	if err != nil {
 		return -1, err
 	}
@@ -322,7 +322,7 @@ func UploadAvatar(uid,path string) (int64, error) {
 		return -1, err
 	}
 	defer stmt.Close()
-	result,err := stmt.Exec(path)
+	result, err := stmt.Exec(path)
 	if err != nil {
 		return -1, err
 	}
@@ -331,7 +331,7 @@ func UploadAvatar(uid,path string) (int64, error) {
 		return -1, err
 	}
 	defer stmt.Close()
-	result,err = stmt.Exec(path,uid)
+	result, err = stmt.Exec(path, uid)
 	if err != nil {
 		return -1, err
 	}
@@ -376,7 +376,6 @@ func AddImg(path []string) ([]int64, error) {
 	return res, nil
 }
 
-
 func tx_rollback(err error, tx *sql.Tx) {
 	if err != nil {
 		err = tx.Rollback()
@@ -387,46 +386,46 @@ func tx_rollback(err error, tx *sql.Tx) {
 	}
 }
 
-func UpdateUser(uid,nickname,phone, gender string) (int64,error) {
-	if nickname != ""{
-		return updateUserMethod("nick_name",nickname,uid)
+func UpdateUser(uid, nickname, phone, gender string) (int64, error) {
+	if nickname != "" {
+		return updateUserMethod("nick_name", nickname, uid)
 	} else if phone != "" {
-		return updateUserMethod("phone",phone,uid)
+		return updateUserMethod("phone", phone, uid)
 	} else if gender != "" {
-		return updateUserMethod("gender",gender,uid)
+		return updateUserMethod("gender", gender, uid)
 	}
-	return -1,errors.New("非法修改")
+	return -1, errors.New("非法修改")
 }
 
-func updateUserMethod (field,value,uid string) (int64,error) {
-	fmt.Println("filed->",field," value-->",value," uid-->",uid)
-	stmt,err := db.Prepare("update user set "+field+" = ? where uid = ?")
+func updateUserMethod(field, value, uid string) (int64, error) {
+	fmt.Println("filed->", field, " value-->", value, " uid-->", uid)
+	stmt, err := db.Prepare("update user set " + field + " = ? where uid = ?")
 	if err != nil {
-		return -1,err
+		return -1, err
 	}
 	defer stmt.Close()
-	result,err := stmt.Exec(value,uid)
+	result, err := stmt.Exec(value, uid)
 	if err != nil {
-		return -1,err
+		return -1, err
 	}
-	code,err := result.RowsAffected()
-	if err != nil{
+	code, err := result.RowsAffected()
+	if err != nil {
 		fmt.Println(err.Error())
 		return -1, err
 	}
-	fmt.Println("code---->",code)
+	fmt.Println("code---->", code)
 	return result.RowsAffected()
 }
 
-func AddIntro(uid, imgPath, name, gender, yearsOld, shenGao, tiZhong, habit, xueLi, job, curLoc, jiGuan, loveWord string) (int64,error) {
-	stmt,err := db.Prepare("insert into intro value(uid,nickname,img_path,gender,years_old,habit,jiguan,curlocal,xueli,job,shengao,tizhong,love_word)values(?,?,?,?,?,?,?,?,?,?,?,?)")
+func AddIntro(uid, imgPath, name, gender, yearsOld, shenGao, tiZhong, habit, xueLi, job, curLoc, jiGuan, loveWord string) (int64, error) {
+	stmt, err := db.Prepare("insert into intro value(uid,nickname,img_path,gender,years_old,habit,jiguan,curlocal,xueli,job,shengao,tizhong,love_word)values(?,?,?,?,?,?,?,?,?,?,?,?)")
 	if err != nil {
-		return -1,err
+		return -1, err
 	}
 	defer stmt.Close()
-	result,err := stmt.Exec(uid,name,imgPath,gender,yearsOld,habit,jiGuan,curLoc,xueLi,job,shenGao,tiZhong,loveWord)
+	result, err := stmt.Exec(uid, name, imgPath, gender, yearsOld, habit, jiGuan, curLoc, xueLi, job, shenGao, tiZhong, loveWord)
 	if err != nil {
-		return -1,err
+		return -1, err
 	}
 	return result.LastInsertId()
 }

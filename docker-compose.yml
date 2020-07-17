@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+ app:
+    links:
+      - db
+      - redis
+    ports:
+      - "8081:8080"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+ db:
+    image: mysql:8.0
+    ports:
+      - "3310:3306"
+    command: --default-authentication-plugin=mysql_native_password 
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+    container_name: tmysql
+ redis:
+    image: redis:6.0.5
+    ports:
+      - "6379:6379"
+    container_name: tredis
+    command:
+      redis-server
+
+  
