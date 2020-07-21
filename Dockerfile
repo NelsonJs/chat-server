@@ -1,21 +1,11 @@
-FROM golang:latest as build
+FROM golang:alpine3.12
 
-ENV GO111MODULE=on \
-    GOOS=linux \
-    GOPROXY="https://mirrors.aliyun.com/goproxy/"
+WORKDIR /dist
 
-RUN mkdir /little_chat
+COPY chat .
 
-COPY . /little_chat
+COPY /config/app.yaml .
 
-WORKDIR /little_chat
+RUN mkdir /dist/images/
 
-RUN go mod download
-
-RUN CGO_ENABLED=0 go build -o app .
-
-FROM scratch as final
-
-COPY --from=build /little_chat/app .
-
-CMD ["/app"]
+CMD ["./chat"]

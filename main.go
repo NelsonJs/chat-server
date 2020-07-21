@@ -32,7 +32,7 @@ func main() {
 }
 
 func initConfig() {
-	viper.SetConfigName("./config/app.yaml")
+	viper.SetConfigName("app")
 	viper.AddConfigPath(".")
 
 	err := viper.ReadInConfig()

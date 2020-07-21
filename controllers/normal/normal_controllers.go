@@ -40,10 +40,10 @@ func UploadImg(c *gin.Context) {
 	paths := make([]string, 0)
 	for _, file := range files {
 		filename := filepath.Base(file.Filename)
-		fmt.Printf("图片名称为：%s \n",filename)
-		var index = strings.LastIndex(filename,".")
-		var mName = strconv.FormatInt(time.Now().Unix(),10)+filename[index:]
-		if err := c.SaveUploadedFile(file, "D:/GoWork/images/" + mName); err != nil {
+		fmt.Printf("图片名称为：%s \n", filename)
+		var index = strings.LastIndex(filename, ".")
+		var mName = strconv.FormatInt(time.Now().Unix(), 10) + filename[index:]
+		if err := c.SaveUploadedFile(file, "/dist/images/"+mName); err != nil {
 			c.String(http.StatusBadRequest, fmt.Sprintf("get form err:%s", err.Error()))
 			return
 		} else {
@@ -71,8 +71,8 @@ func UploadOneImg(c *gin.Context) {
 	paths := make([]string, 0)
 	for _, file := range files {
 		filename := filepath.Base(file.Filename)
-		fmt.Printf("图片名称为：%s \n",filename)
-		if err := c.SaveUploadedFile(file, "D:/GoWork/images/" + filename); err != nil {
+		fmt.Printf("图片名称为：%s \n", filename)
+		if err := c.SaveUploadedFile(file, "/dist/images/"+filename); err != nil {
 			c.String(http.StatusBadRequest, fmt.Sprintf("get form err:%s", err.Error()))
 			return
 		} else {
@@ -96,13 +96,19 @@ func PublishDynamic(c *gin.Context) {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
-	code,err := mysql_serve.PublishDynamic(addDynamic.Uid,addDynamic.Title,addDynamic.Ids)
+	code, err := mysql_serve.PublishDynamic(addDynamic.Uid, addDynamic.Title, addDynamic.Ids)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 	fmt.Println(code)
-	c.JSON(http.StatusOK,gin.H{
-		"code":code,
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+	})
+}
+
+func Test(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"msg": "测试~~~~~~",
 	})
 }

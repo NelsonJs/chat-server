@@ -58,5 +58,5 @@ func Init() {
 	httpPort := viper.GetString("app.httpPort")
 	fmt.Println("httpPort:", httpPort)
 	router.GET("/api/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	router.Run(":8081")
+	router.Run(":8080")
 }
