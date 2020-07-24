@@ -34,5 +34,6 @@ type ResDynamic struct {
 	Comment_id       int64            `json:"commentid"`
 	Time             int64            `json:"time"`
 	Res_img          *json.RawMessage `json:"res_img"`
+	Liked            bool             `json:"liked"`
 	UserInfo_
 }

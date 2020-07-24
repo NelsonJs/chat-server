@@ -6,6 +6,6 @@ COPY chat .
 
 COPY /config/app.yaml .
 
-RUN mkdir /dist/images/
+RUN mkdir /dist/images/ && mkdir /dist/log/
 
 CMD ["./chat"]

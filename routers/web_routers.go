@@ -45,10 +45,11 @@ func Init() {
 		index.GET("/neardynamic", normal.NearDynamic)
 		index.POST("/dynamic", normal.PublishDynamic)
 		index.POST("/loveintro", accounts.PublishLoveIntro)
+		index.POST("/likedynamic", normal.LickDynamic)
 	}
 	resource := router.Group("/resource")
 	{
-		resource.StaticFS("/upload", http.Dir("/home"))
+		resource.StaticFS("/upload", http.Dir("/dist/images"))
 		resource.POST("/uploadimg", normal.UploadImg)
 	}
 	// msg := router.Group("/msg")

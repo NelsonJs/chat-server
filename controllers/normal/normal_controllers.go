@@ -10,8 +10,10 @@ import (
 	"time"
 
 	"chat/models"
+	"chat/models/dynamic_models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 func NearDynamic(c *gin.Context) {
@@ -47,7 +49,7 @@ func UploadImg(c *gin.Context) {
 			c.String(http.StatusBadRequest, fmt.Sprintf("get form err:%s", err.Error()))
 			return
 		} else {
-			paths = append(paths, "http://192.168.1.6:8080/resource/upload/"+mName)
+			paths = append(paths, "http://"+viper.GetString("app.imagePathIp")+":8080/resource/upload/"+mName)
 		}
 	}
 	res, err := mysql_serve.AddImg(paths)
@@ -76,7 +78,7 @@ func UploadOneImg(c *gin.Context) {
 			c.String(http.StatusBadRequest, fmt.Sprintf("get form err:%s", err.Error()))
 			return
 		} else {
-			paths = append(paths, "http://192.168.1.6:8080/resource/upload/"+filename)
+			paths = append(paths, "http://"+viper.GetString("app.imagePathIp")+":8080/resource/upload/"+filename)
 		}
 	}
 	res, err := mysql_serve.AddImg(paths)
@@ -111,4 +113,24 @@ func Test(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"msg": "测试~~~~~~",
 	})
+}
+
+func LickDynamic(c *gin.Context) {
+	var iLike dynamic_models.ILiike
+	if err := c.ShouldBindJSON(&iLike); err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+	fmt.Println("iLike.Did-->", iLike.Did, " iLike.Uid--->", iLike.Uid)
+	code, err := mysql_serve.AddDynamicLike(iLike.Did, iLike.Uid)
+	if code > 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"code": code,
+		})
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"code": code,
+			"msg":  err.Error(),
+		})
+	}
 }

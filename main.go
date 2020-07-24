@@ -26,7 +26,7 @@ func main() {
 	initConfig()
 	routers.InitScocketRouters()
 	mysql_serve.InitMySQL()
-	//redisManager = redis_serve.ConnectRedis()
+	redisManager = redis_serve.ConnectRedis()
 	go websocket.StartWebSocket(redisManager)
 	routers.Init()
 }

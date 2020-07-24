@@ -1,7 +1,9 @@
 package mysql_serve
 
 import (
+	"chat/logger"
 	"chat/models"
+	"chat/models/dynamic_models"
 	"database/sql"
 	"encoding/json"
 	"errors"
@@ -229,9 +231,14 @@ func NearDynamic() (error, []*models.ResDynamic) {
 	list := make([]*models.ResDynamic, 0)
 	for rows.Next() {
 		bean := models.ResDynamic{}
-		err = rows.Scan(&bean.Id, &bean.Uid, &bean.Title, &bean.Img, &bean.Like, &bean.Comment_id, &bean.Loc, &bean.Lat, &bean.Lng, &bean.Time, &bean.Res_img, &bean.Uid, &bean.Nick_name, &bean.Pwd, &bean.Phone, &bean.Gender, &bean.Avatar, &bean.Create_time, &bean.Login_time, &bean.Logout_time, &bean.Status, &bean.Year_old)
+		err = rows.Scan(&bean.Id, &bean.Uid, &bean.Title, &bean.Img, &bean.Like, &bean.Comment_id, &bean.Loc, &bean.Lat, &bean.Lng, &bean.Time, &bean.Res_img, &bean.Uid, &bean.Nick_name, &bean.Pwd, &bean.Phone, &bean.Gender, &bean.Year_old, &bean.Avatar, &bean.Create_time, &bean.Login_time, &bean.Logout_time, &bean.Status)
 		if err != nil {
 			return err, nil
+		}
+		likes := GetDynamicLikes(bean.Id, bean.Uid)
+		logger.GetInstance().InfoLog().Println("bean id--->", bean.Id, "likes length--->", len(likes))
+		if len(likes) > 0 {
+			bean.Liked = true
 		}
 		list = append(list, &bean)
 	}
@@ -418,7 +425,7 @@ func updateUserMethod(field, value, uid string) (int64, error) {
 }
 
 func AddIntro(uid, imgPath, name, gender, yearsOld, shenGao, tiZhong, habit, xueLi, job, curLoc, jiGuan, loveWord string) (int64, error) {
-	stmt, err := db.Prepare("insert into intro value(uid,nickname,img_path,gender,years_old,habit,jiguan,curlocal,xueli,job,shengao,tizhong,love_word)values(?,?,?,?,?,?,?,?,?,?,?,?)")
+	stmt, err := db.Prepare("insert into intro(uid,nickname,img_path,gender,years_old,habit,jiguan,curlocal,xueli,job,shengao,tizhong,love_word)values(?,?,?,?,?,?,?,?,?,?,?,?)")
 	if err != nil {
 		return -1, err
 	}
@@ -428,4 +435,44 @@ func AddIntro(uid, imgPath, name, gender, yearsOld, shenGao, tiZhong, habit, xue
 		return -1, err
 	}
 	return result.LastInsertId()
+}
+
+func AddDynamicLike(d_id, uid int64) (int64, error) {
+	stmt, err := db.Prepare("insert into ilike(d_id,uid)values(?,?)")
+	if err != nil {
+		return -1, err
+	}
+	fmt.Println("d_id-->", d_id, " uid--->", uid)
+	defer stmt.Close()
+	result, err := stmt.Exec(d_id, uid)
+	if err != nil {
+		return -1, err
+	}
+	return result.LastInsertId()
+}
+
+func GetDynamicLikes(d_id, uid int64) []*dynamic_models.ILiike {
+	list := make([]*dynamic_models.ILiike, 0)
+	stmt, err := db.Prepare("select * from ilike where uid = ? and d_id = ?")
+	if err != nil {
+		logger.GetInstance().ErrLog().Println(err)
+		return list
+	}
+	defer stmt.Close()
+	rows, err := stmt.Query(uid, d_id)
+	if err != nil {
+		logger.GetInstance().ErrLog().Println(err)
+		return list
+	}
+	for rows.Next() {
+		b := dynamic_models.ILiike{}
+		var id string
+		err = rows.Scan(&id, &b.Did, &b.Uid)
+		if err != nil {
+			logger.GetInstance().ErrLog().Println(err)
+			return list
+		}
+		list = append(list, &b)
+	}
+	return list
 }
