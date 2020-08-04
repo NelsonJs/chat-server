@@ -47,6 +47,14 @@ func processMsg(client *Client, msg []byte) {
 		return
 	}
 
+	reg := IsRegisterWithUid(client, reqModel.Uid)
+	if !reg && reqModel.Cmd != "login" { //没有注册
+		res := &models.Res{Code: -1, Msg: "该用户暂未注册"}
+		resData, _ := json.Marshal(res)
+		client.SendMsg(resData)
+		return
+	}
+
 	if value, ok := getHandler(reqModel.Cmd); ok {
 		fmt.Println(reqModel.Cmd)
 		value(client, reqModel)

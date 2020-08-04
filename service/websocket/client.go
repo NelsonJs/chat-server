@@ -40,7 +40,7 @@ type Login struct {
 }
 
 func (l *Login) GetKey() (key string) {
-	key = fmt.Sprintf("%d_%s", l.AppId, l.UserId)
+	key = fmt.Sprintf("%s,%s", l.AppId, l.UserId)
 	return
 }
 

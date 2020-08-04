@@ -39,6 +39,4 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 	client := NewClient(conn.RemoteAddr().String(), conn, curTime, redisManager)
 	go client.read()
 	go client.Write()
-	//用户连接事件
-	clientManager.Connection <- client
 }

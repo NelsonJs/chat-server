@@ -33,7 +33,7 @@ func (manager *ClientManager) AddUser(client *Client) {
 	manager.UserLock.Lock()
 	defer manager.UserLock.Unlock()
 	manager.Users[client.UserId] = client
-	for i, _ := range manager.Users {
+	for i := range manager.Users {
 		client.sendTips(1, "登录成功"+i+client.UserId+"---")
 	}
 

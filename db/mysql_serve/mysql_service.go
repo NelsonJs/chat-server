@@ -1,7 +1,7 @@
 package mysql_serve
 
 import (
-	"chat/logger"
+	//"chat/logger"
 	"chat/models"
 	"chat/models/dynamic_models"
 	"database/sql"
@@ -22,6 +22,39 @@ func InitMySQL() {
 		fmt.Println("打开数据库连接失败", err)
 		return
 	}
+}
+
+//获取聊天表的id
+func GetChatUid(uid string) string {
+	stmt, err := db.Prepare("select chat_id from chat_user where chat_id = ?")
+	if err != nil {
+		return ""
+	}
+	defer stmt.Close()
+	row := stmt.QueryRow(uid)
+	var chatId string
+	err = row.Scan(&chatId)
+	if err != nil {
+		return ""
+	}
+	return chatId
+}
+
+func InsertChatUid(uid string) bool {
+	stmt,err := db.Prepare("insert into chat_user(chat_id)values(?)")
+	if err != nil {
+		return false
+	}
+	defer stmt.Close()
+	result,err := stmt.Exec(uid)
+	if err != nil {
+		return false
+	}
+	_,err = result.RowsAffected()
+	if err != nil {
+		return false
+	}
+	return true
 }
 
 func SaveRecord(sendId, receiveId, content string, msgType int) (int, error) {
@@ -236,7 +269,7 @@ func NearDynamic() (error, []*models.ResDynamic) {
 			return err, nil
 		}
 		likes := GetDynamicLikes(bean.Id, bean.Uid)
-		logger.GetInstance().InfoLog().Println("bean id--->", bean.Id, "likes length--->", len(likes))
+		//logger.GetInstance().Info().Println("bean id--->", bean.Id, "likes length--->", len(likes))
 		if len(likes) > 0 {
 			bean.Liked = true
 		}
@@ -261,7 +294,7 @@ func PublishDynamic(uid string, title string, imgIds []int64) (int64, error) {
 		}
 		queryCon = append(queryCon, imgIds[i])
 	}
-	fmt.Printf("id个数: %d 查询语句：%s 查询参数：%s ", len(imgIds), queryStr, queryCon)
+	//fmt.Printf("id个数: %d 查询语句：%s 查询参数：%s ", len(imgIds), queryStr, queryCon)
 	stmt, err := tx.Prepare("select path from imgs where " + queryStr)
 	if err != nil {
 		return 0, err
@@ -455,13 +488,13 @@ func GetDynamicLikes(d_id, uid int64) []*dynamic_models.ILiike {
 	list := make([]*dynamic_models.ILiike, 0)
 	stmt, err := db.Prepare("select * from ilike where uid = ? and d_id = ?")
 	if err != nil {
-		logger.GetInstance().ErrLog().Println(err)
+		//logger.GetInstance().ErrLog().Println(err)
 		return list
 	}
 	defer stmt.Close()
 	rows, err := stmt.Query(uid, d_id)
 	if err != nil {
-		logger.GetInstance().ErrLog().Println(err)
+		//logger.GetInstance().ErrLog().Println(err)
 		return list
 	}
 	for rows.Next() {
@@ -469,7 +502,7 @@ func GetDynamicLikes(d_id, uid int64) []*dynamic_models.ILiike {
 		var id string
 		err = rows.Scan(&id, &b.Did, &b.Uid)
 		if err != nil {
-			logger.GetInstance().ErrLog().Println(err)
+			//logger.GetInstance().ErrLog().Println(err)
 			return list
 		}
 		list = append(list, &b)

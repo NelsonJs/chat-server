@@ -1,13 +1,11 @@
 package logger
 
 import (
-	"io"
 	"log"
 	"os"
 )
 
 type logManager struct {
-	log_ *log.Logger
 }
 
 var manager *logManager
@@ -19,20 +17,19 @@ func init() {
 	if err != nil {
 		return
 	}
-	log_s := log.New(io.MultiWriter(file, os.Stderr), "--->", log.Ldate|log.Ltime|log.Lshortfile)
-	manager.log_ = log_s
+	log.SetOutput(file)
 }
 
 func GetInstance() *logManager {
 	return manager
 }
 
-func (l *logManager) ErrLog() *log.Logger {
-	l.log_.SetPrefix("[error]")
-	return l.log_
+func (l *logManager) Err() *logManager {
+	log.SetPrefix("[error]")
+	return manager
 }
 
-func (l *logManager) InfoLog() *log.Logger {
-	l.log_.SetPrefix("[info]")
-	return l.log_
+func (l *logManager) Info() *logManager {
+	log.SetPrefix("[info]")
+	return manager
 }

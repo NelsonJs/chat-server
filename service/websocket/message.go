@@ -10,6 +10,8 @@ import (
 )
 
 //SendText: 暂时是单聊
+
+//SendText: 暂时是单聊
 func SendText(sendId, receiveId, txt string) (bool, error) {
 	client := GetUserClient(receiveId)
 	if client == nil {
@@ -25,13 +27,14 @@ func SendText(sendId, receiveId, txt string) (bool, error) {
 	return true, nil
 }
 
+//客户端发送内容过来调用该接口
 func SendTxt(client *Client, reqModel *models.Req) {
 	if client == nil || reqModel == nil {
 		return
 	}
 
 	c := GetUserClient(strconv.FormatInt(reqModel.ReceiveId, 10))
-	if c == nil {
+	if c == nil { //不在线（未注册）
 		return
 	}
 	//保存进数据库
