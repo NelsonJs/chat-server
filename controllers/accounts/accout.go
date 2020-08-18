@@ -158,8 +158,7 @@ func PublishLoveIntro(c *gin.Context) {
 		path = "http://" + viper.GetString("app.imagePathIp") + ":8080/resource/upload/" + mName
 	}
 	uid := c.PostForm("uid")
-	name := c.PostForm("name")
-	gender := c.PostForm("gender")
+	nickname := c.PostForm("nickname")
 	yearsOld := c.PostForm("yearsOld")
 	shenGao := c.PostForm("shenGao")
 	tiZhong := c.PostForm("tiZhong")
@@ -169,14 +168,14 @@ func PublishLoveIntro(c *gin.Context) {
 	curLoc := c.PostForm("curLoc")
 	jiGuan := c.PostForm("jiGuan")
 	loveWord := c.PostForm("loveWord")
-	if uid == "" || name == "" || gender == "" || yearsOld == "" || shenGao == "" || tiZhong == "" || habit == "" || xueLi == "" || job == "" || curLoc == "" || jiGuan == "" || loveWord == "" {
+	if uid == "" || yearsOld == "" || shenGao == "" || tiZhong == "" || habit == "" || xueLi == "" || job == "" || curLoc == "" || jiGuan == "" || loveWord == "" {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
 			"msg":  "参数不全",
 		})
 		return
 	}
-	code, err := mysql_serve.AddIntro(uid, path, name, gender, yearsOld, shenGao, tiZhong, habit, xueLi, job, curLoc, jiGuan, loveWord)
+	code, err := mysql_serve.AddIntro(uid, nickname,path, yearsOld, shenGao, tiZhong, habit, xueLi, job, curLoc, jiGuan, loveWord)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,

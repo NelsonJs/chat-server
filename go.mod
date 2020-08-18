@@ -12,5 +12,7 @@ require (
 	github.com/streadway/amqp v1.0.0
 	github.com/swaggo/gin-swagger v1.2.0
 	github.com/swaggo/swag v1.6.7
+	go.uber.org/zap v1.10.0
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 //golang.org/x/tools v0.0.0-20200505023115-26f46d2f7ef8 // indirect
 )

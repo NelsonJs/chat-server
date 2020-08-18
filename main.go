@@ -4,7 +4,6 @@ import (
 	"chat/db/mysql_serve"
 	"chat/db/redis_serve"
 	"chat/routers"
-	"chat/service/websocket"
 	"fmt"
 
 	"github.com/spf13/viper"
@@ -24,10 +23,10 @@ var redisManager *redis_serve.RedisManager
 // @host localhost:8080
 func main() {
 	initConfig()
-	routers.InitScocketRouters()
+	//routers.InitScocketRouters()
 	mysql_serve.InitMySQL()
 	redisManager = redis_serve.ConnectRedis()
-	go websocket.StartWebSocket(redisManager)
+	//go websocket.StartWebSocket(redisManager)
 	routers.Init()
 }
 

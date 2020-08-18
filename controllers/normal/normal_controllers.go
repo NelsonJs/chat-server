@@ -134,3 +134,16 @@ func LickDynamic(c *gin.Context) {
 		})
 	}
 }
+
+func GetLoveIntro(c *gin.Context) {
+	t := c.Query("t")
+	limit := c.Query("limit")
+	if t == "" || limit == "" {
+		c.String(http.StatusOK,"参数缺失！")
+		return
+	}
+	list := mysql_serve.GetLoveIntro(t,limit)
+	c.JSON(http.StatusOK,gin.H{
+		"data":list,
+	})
+}

@@ -37,3 +37,20 @@ type ResDynamic struct {
 	Liked            bool             `json:"liked"`
 	UserInfo_
 }
+
+type LoveIntro struct {
+	Id int64 `json:"id"`
+	Uid int64 `json:"uid"`
+	Nickname string `json:"nickname"`
+	Img string `json:"img"`
+	Gender int `json:"gender"`
+	Habit string `json:"habit"`
+	JiGuan string `json:"ji_guan"`
+	CurLocal string `json:"cur_local"`
+	XueLi string `json:"xue_li"`
+	Job string `json:"job"`
+	ShenGao string `json:"shen_gao"`
+	TiZhong string `json:"ti_zhong"`
+	LoveWord string `json:"love_word"`
+	CreateTime int64 `json:"create_time"`
+}

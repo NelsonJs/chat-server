@@ -1,6 +1,7 @@
 package mysql_serve
 
 import (
+	"chat/logger"
 	//"chat/logger"
 	"chat/models"
 	"chat/models/dynamic_models"
@@ -457,13 +458,13 @@ func updateUserMethod(field, value, uid string) (int64, error) {
 	return result.RowsAffected()
 }
 
-func AddIntro(uid, imgPath, name, gender, yearsOld, shenGao, tiZhong, habit, xueLi, job, curLoc, jiGuan, loveWord string) (int64, error) {
-	stmt, err := db.Prepare("insert into intro(uid,nickname,img_path,gender,years_old,habit,jiguan,curlocal,xueli,job,shengao,tizhong,love_word)values(?,?,?,?,?,?,?,?,?,?,?,?)")
+func AddIntro(uid, nickname,imgPath, yearsOld, shenGao, tiZhong, habit, xueLi, job, curLoc, jiGuan, loveWord string) (int64, error) {
+	stmt, err := db.Prepare("insert into intro(uid,nickname,img_path,years_old,habit,jiguan,curlocal,xueli,job,shengao,tizhong,love_word)values(?,?,?,?,?,?,?,?,?,?,?)")
 	if err != nil {
 		return -1, err
 	}
 	defer stmt.Close()
-	result, err := stmt.Exec(uid, name, imgPath, gender, yearsOld, habit, jiGuan, curLoc, xueLi, job, shenGao, tiZhong, loveWord)
+	result, err := stmt.Exec(uid, nickname,imgPath, yearsOld, habit, jiGuan, curLoc, xueLi, job, shenGao, tiZhong, loveWord,time.Now().Unix())
 	if err != nil {
 		return -1, err
 	}
@@ -506,6 +507,32 @@ func GetDynamicLikes(d_id, uid int64) []*dynamic_models.ILiike {
 			return list
 		}
 		list = append(list, &b)
+	}
+	return list
+}
+
+func GetLoveIntro(t string, limit string) []*models.LoveIntro {
+	list := make([]*models.LoveIntro,0)
+	stmt,err := db.Prepare("select * from intro where create_time >= ? limit ?")
+	if err != nil {
+		logger.LogManager.Error(err.Error())
+		return list
+	}
+	defer stmt.Close()
+	rows,err := stmt.Query(t,limit)
+	if err != nil {
+		logger.LogManager.Error(err.Error())
+		return list
+	}
+	defer rows.Close()
+	for rows.Next() {
+		bean := models.LoveIntro{}
+		err = rows.Scan(&bean.Id,&bean.Uid,&bean.Nickname,&bean.Img,&bean.Gender,&bean.Habit,&bean.JiGuan,&bean.CurLocal,&bean.XueLi,&bean.Job,&bean.ShenGao,&bean.TiZhong,&bean.LoveWord,&bean.CreateTime)
+		if err != nil {
+			logger.LogManager.Error(err.Error())
+			return list
+		}
+		list = append(list,&bean)
 	}
 	return list
 }

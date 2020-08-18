@@ -38,5 +38,4 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 	curTime := uint64(time.Now().Unix())
 	client := NewClient(conn.RemoteAddr().String(), conn, curTime, redisManager)
 	go client.read()
-	go client.Write()
 }

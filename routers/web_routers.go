@@ -46,6 +46,7 @@ func Init() {
 		index.POST("/dynamic", normal.PublishDynamic)
 		index.POST("/loveintro", accounts.PublishLoveIntro)
 		index.POST("/likedynamic", normal.LickDynamic)
+		index.GET("/loveintrolist", normal.GetLoveIntro)
 	}
 	resource := router.Group("/resource")
 	{
