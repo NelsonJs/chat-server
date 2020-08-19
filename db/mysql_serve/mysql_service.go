@@ -458,13 +458,13 @@ func updateUserMethod(field, value, uid string) (int64, error) {
 	return result.RowsAffected()
 }
 
-func AddIntro(uid, nickname,imgPath, yearsOld, shenGao, tiZhong, habit, xueLi, job, curLoc, jiGuan, loveWord string) (int64, error) {
-	stmt, err := db.Prepare("insert into intro(uid,nickname,img_path,years_old,habit,jiguan,curlocal,xueli,job,shengao,tizhong,love_word)values(?,?,?,?,?,?,?,?,?,?,?)")
+func AddIntro(uid, nickname,imgPath, shenGao, tiZhong, habit, xueLi, job, curLoc, jiGuan, loveWord string) (int64, error) {
+	stmt, err := db.Prepare("insert into intro(uid,nickname,img_path,habit,jiguan,curlocal,xueli,job,shengao,tizhong,love_word,create_time)values(?,?,?,?,?,?,?,?,?,?,?,?)")
 	if err != nil {
 		return -1, err
 	}
 	defer stmt.Close()
-	result, err := stmt.Exec(uid, nickname,imgPath, yearsOld, habit, jiGuan, curLoc, xueLi, job, shenGao, tiZhong, loveWord,time.Now().Unix())
+	result, err := stmt.Exec(uid, nickname,imgPath, habit, jiGuan, curLoc, xueLi, job, shenGao, tiZhong, loveWord,time.Now().Unix())
 	if err != nil {
 		return -1, err
 	}
@@ -513,7 +513,7 @@ func GetDynamicLikes(d_id, uid int64) []*dynamic_models.ILiike {
 
 func GetLoveIntro(t string, limit string) []*models.LoveIntro {
 	list := make([]*models.LoveIntro,0)
-	stmt,err := db.Prepare("select * from intro where create_time >= ? limit ?")
+	stmt,err := db.Prepare("select * from intro where create_time >= ? order by create_time desc limit ?")
 	if err != nil {
 		logger.LogManager.Error(err.Error())
 		return list

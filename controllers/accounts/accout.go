@@ -2,6 +2,7 @@ package accounts
 
 import (
 	"chat/db/mysql_serve"
+	"chat/logger"
 	"chat/models"
 	"fmt"
 	"net/http"
@@ -159,7 +160,7 @@ func PublishLoveIntro(c *gin.Context) {
 	}
 	uid := c.PostForm("uid")
 	nickname := c.PostForm("nickname")
-	yearsOld := c.PostForm("yearsOld")
+	//yearsOld := c.PostForm("yearsOld")
 	shenGao := c.PostForm("shenGao")
 	tiZhong := c.PostForm("tiZhong")
 	habit := c.PostForm("habit")
@@ -168,15 +169,16 @@ func PublishLoveIntro(c *gin.Context) {
 	curLoc := c.PostForm("curLoc")
 	jiGuan := c.PostForm("jiGuan")
 	loveWord := c.PostForm("loveWord")
-	if uid == "" || yearsOld == "" || shenGao == "" || tiZhong == "" || habit == "" || xueLi == "" || job == "" || curLoc == "" || jiGuan == "" || loveWord == "" {
+	if uid == "" || shenGao == "" || tiZhong == "" || habit == "" || xueLi == "" || job == "" || curLoc == "" || jiGuan == "" || loveWord == "" {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
 			"msg":  "参数不全",
 		})
 		return
 	}
-	code, err := mysql_serve.AddIntro(uid, nickname,path, yearsOld, shenGao, tiZhong, habit, xueLi, job, curLoc, jiGuan, loveWord)
+	code, err := mysql_serve.AddIntro(uid, nickname,path, shenGao, tiZhong, habit, xueLi, job, curLoc, jiGuan, loveWord)
 	if err != nil {
+		logger.LogManager.Error(err.Error())
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
 			"msg":  err.Error(),
@@ -185,5 +187,12 @@ func PublishLoveIntro(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
+	})
+}
+
+func GetUsersWithLoginTime(c *gin.Context) {
+	list := mysql_serve.GetUsers()
+	c.JSON(http.StatusOK,gin.H{
+		"data":list,
 	})
 }
