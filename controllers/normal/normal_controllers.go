@@ -143,7 +143,17 @@ func GetLoveIntro(c *gin.Context) {
 		return
 	}
 	list := mysql_serve.GetLoveIntro(t,limit)
+	if len(list) == 0 {
+		c.JSON(http.StatusOK,gin.H{
+			"code":404,
+			"msg":"",
+			"data":list,
+		})
+		return
+	}
 	c.JSON(http.StatusOK,gin.H{
+		"code":"200",
+		"msg":"",
 		"data":list,
 	})
 }
