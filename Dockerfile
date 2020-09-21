@@ -4,7 +4,7 @@ WORKDIR /dist
 
 COPY chat .
 
-COPY /config/app.yaml .
+COPY /app.yaml .
 
 RUN mkdir /dist/images/ && mkdir /dist/log/
 

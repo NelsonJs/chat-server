@@ -1,8 +1,0 @@
-app:
-  logFile: /dist/log/gin.log
-  mysqlLog: /dist/log/mysql.log
-  httpPort: 8080
-  webSocketPort: 7979
-  httpUrl: 127.0.0.1:8080
-  webSocketUrl: 127.0.0.1:7979
-  imagePathIp: 192.168.1.6

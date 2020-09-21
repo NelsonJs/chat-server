@@ -1,27 +1,17 @@
 package redis_serve
 
 import (
-	"fmt"
-
 	"github.com/gomodule/redigo/redis"
 )
 
-type RedisManager struct {
-	Redis redis.Conn
-}
+var (
+	conn redis.Conn
+	err  error
+)
 
-func ConnectRedis() *RedisManager {
-	c, err := redis.Dial("tcp", "tredis:6379")
+func init() {
+	conn, err = redis.Dial("tcp", "tredis:6379")
 	if err != nil {
-		fmt.Println("Connect to redis error:", err)
-		return nil
+		panic(err)
 	}
-	return &RedisManager{Redis: c}
-}
-
-func (manager *RedisManager) addUser(info map[string]interface{}) {
-	if info == nil {
-		return
-	}
-
 }

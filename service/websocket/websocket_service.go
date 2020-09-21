@@ -18,7 +18,7 @@ var (
 
 func StartWebSocket(redisM *redis_serve.RedisManager) {
 	redisManager = redisM
-	socketPort := viper.GetString("app.webSocketPort")
+	socketPort := viper.GetString("webSocketPort")
 	http.HandleFunc("/serveWs", serveWs)
 	go clientManager.Start()
 	http.ListenAndServe(":"+socketPort, nil)

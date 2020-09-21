@@ -14,5 +14,7 @@ require (
 	github.com/swaggo/swag v1.6.7
 	go.uber.org/zap v1.10.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
+	gorm.io/driver/mysql v1.0.1
+	gorm.io/gorm v1.20.1
 //golang.org/x/tools v0.0.0-20200505023115-26f46d2f7ef8 // indirect
 )

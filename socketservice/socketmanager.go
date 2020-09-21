@@ -1,0 +1,5 @@
+package socketservice
+
+func StartSocket() {
+
+}

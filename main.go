@@ -1,16 +1,5 @@
 package main
 
-import (
-	"chat/db/mysql_serve"
-	"chat/db/redis_serve"
-	"chat/routers"
-	"fmt"
-
-	"github.com/spf13/viper"
-)
-
-var redisManager *redis_serve.RedisManager
-
 // @title 微聊 API
 // @version 1.0
 // @description 不定时更新
@@ -22,21 +11,5 @@ var redisManager *redis_serve.RedisManager
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 // @host localhost:8080
 func main() {
-	initConfig()
-	//routers.InitScocketRouters()
-	mysql_serve.InitMySQL()
-	redisManager = redis_serve.ConnectRedis()
-	//go websocket.StartWebSocket(redisManager)
-	routers.Init()
-}
 
-func initConfig() {
-	viper.SetConfigName("app")
-	viper.AddConfigPath(".")
-
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(fmt.Errorf("fatal error config file:%s \n", err))
-	}
-	fmt.Println("config app:", viper.GetString("app"))
 }

@@ -6,9 +6,9 @@ use demo;
 DROP TABLE IF EXISTS `msg`;
 create table msg(
 `id` bigint primary key auto_increment,
-`send_id` varchar(100) not null,
-`receive_id` varchar(100) not null,
-`group_id` varchar(100) default '',
+`send_id` varchar(32) not null,
+`receive_id` varchar(32) not null,
+`group_id` varchar(32) default '',
 `msg_type` int default 0,
 `content` varchar(255) default '',
 `status` int default 0 comment '0 发送成功 -1失败',
