@@ -1,5 +1,7 @@
 package main
 
+import "chat/socketservice"
+
 // @title 微聊 API
 // @version 1.0
 // @description 不定时更新
@@ -11,5 +13,5 @@ package main
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 // @host localhost:8080
 func main() {
-
+	socketservice.StartSocket()
 }
