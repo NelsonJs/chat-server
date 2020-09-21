@@ -1,6 +1,8 @@
 package main
 
-import "chat/socketservice"
+import (
+	"chat/socketservice"
+)
 
 // @title 微聊 API
 // @version 1.0

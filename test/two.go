@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-type Msg struct {
+type Msg2 struct {
 	Cmd string //动作类型 login logout register Send
 	Uid string
 	PeerUid string
@@ -26,17 +26,16 @@ func main() {
 		fmt.Println("连接ws错误",err.Error())
 		return
 	}
-	msg := Msg{
+	msg := Msg2{
 		Cmd: "send",
-		Uid: "100",
-		PeerUid: "101",
-		Nickname: "nelson",
+		Uid: "101",
+		PeerUid: "100",
+		Nickname: "huli",
 		Avatar: "",
-		Gender: 1,
-		Content: "这是one发送来的内容",
+		Gender: 2,
+		Content: "这是two发送来的内容",
 		MsgType: 1,
 		AppId: 1,
-
 	}
 	go func() {
 		for {
@@ -44,27 +43,25 @@ func main() {
 			if err != nil {
 				fmt.Println(err)
 			}
-			fmt.Printf("客户端A接收到消息：%s\n",byt)
+			fmt.Printf("客户端B接收到消息：%s\n",byt)
 		}
 	}()
 	msg.Cmd = "register"
-	byt,_ := json.Marshal(&msg)
+	byt,_ := json.Marshal(msg)
 	err = conn.WriteMessage(websocket.TextMessage,byt)
 	if err != nil {
 		fmt.Println(err)
 	}
 	for {
-		fmt.Println("客户端A：请输入内容..")
+		fmt.Println("客户端B：请输入内容..")
 		sc := bufio.NewScanner(os.Stdin)
 		sc.Scan()
 		msg.Cmd = "send"
 		msg.Content = sc.Text()
-		fmt.Println(msg)
 		byt,_ := json.Marshal(&msg)
 		err = conn.WriteMessage(websocket.TextMessage,byt)
 		if err != nil {
 			fmt.Println(err)
 		}
 	}
-
 }

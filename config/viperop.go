@@ -14,7 +14,7 @@ func init() {
 	if err != nil {
 		panic(fmt.Errorf("fatal error config file:%s \n", err))
 	}
-	fmt.Println("config app:", viper.GetString("app"))
+	fmt.Println("config app:", viper.GetString("webSocketPort"))
 }
 
 func GetViperString(key string) string {

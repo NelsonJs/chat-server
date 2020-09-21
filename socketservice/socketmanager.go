@@ -22,9 +22,9 @@ func init() {
 	socketManager = &manager{
 		Clients: make(map[string]*Client),
 		Login: make(chan *Client,10),
+		Register: make(chan *Client,10),
 		Broadcast: make(chan []byte,10),
 	}
-	listenChanEvent()
 }
 //监听事件
 func listenChanEvent() {
@@ -47,7 +47,7 @@ func (m *manager) userlogin(client *Client) {
 			v.LoginTime = time.Now().Unix()
 			v.Response <- GenerateMsg(constants.OK,"登录成功!")
 		} else {
-			v.Response <- GenerateMsg(constants.ErrNotRegister,"该用户暂未注册!")
+			client.Response <- GenerateMsg(constants.ErrNotRegister,"该用户暂未注册!")
 		}
 	} else {
 		client.Response <- GenerateMsg(constants.ErrParameters,"登录失败，缺少uid!")
@@ -59,13 +59,14 @@ func (m *manager) userlogin(client *Client) {
 func (m *manager) userRegister(client *Client) {
 	m.RWMutex.Lock()
 	if client != nil && client.Uid != ""{
-		v,ok := socketManager.Clients[client.Uid]
+		fmt.Println("开始注册..")
+		_,ok := socketManager.Clients[client.Uid]
 		if ok {
 			//已经注册过
 			client.Response <- GenerateMsg(constants.ErrHasRegistered,"该用户已被注册!")
 		} else {
-			socketManager.Clients[client.Uid] = v
-			v.Response <- GenerateMsg(constants.OK,"注册成功!")
+			socketManager.Clients[client.Uid] = client
+			client.Response <- GenerateMsg(constants.OK,"注册成功!")
 		}
 	} else {
 		client.Response <- GenerateMsg(constants.ErrParameters,"注册失败，缺少uid!")
@@ -74,9 +75,11 @@ func (m *manager) userRegister(client *Client) {
 }
 
 func StartSocket() {
+	go listenChanEvent()
 	port := config.GetViperString("webSocketPort")
 	http.HandleFunc("/serveWs", serveWs)
-	http.ListenAndServe(":"+port, nil)
+	err := http.ListenAndServe(":"+port, nil)
+	fmt.Println(err)
 }
 
 func serveWs(w http.ResponseWriter, r *http.Request) {
