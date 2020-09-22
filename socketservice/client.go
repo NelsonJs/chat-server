@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
+	"time"
 )
 
 type Client struct {
@@ -11,8 +12,9 @@ type Client struct {
 	Uid string
 	Response chan *ResponseMsg
 	Send chan *Msg
-	LoginTime int64
-	LogoutTIme int64
+	LoginTime time.Time
+	LogoutTIme time.Time
+	PoneTime time.Duration
 	Addr string //客户端地址
 }
 
@@ -30,6 +32,7 @@ func NewClient(conn *websocket.Conn)  {
 		Conn: conn,
 		Response: make(chan *ResponseMsg,10),
 		Send: make(chan *Msg,10),
+		PoneTime: 8,
 		Addr: conn.RemoteAddr().String(),
 	}
 	go client.Read()
@@ -37,16 +40,16 @@ func NewClient(conn *websocket.Conn)  {
 }
 
 func (client *Client) Read() {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Printf("read 出现异常%s\n",err)
+			close(client.Send)
+			close(client.Response)
+		}
+	}()
 	for {
 		msgType,byt,err := client.Conn.ReadMessage()
 		if err == nil {
-			var msg Msg
-			err := json.Unmarshal(byt,&msg)
-			if err != nil {
-				fmt.Println(err)
-			} else {
-				fmt.Println("--------->",msg)
-			}
 			Parse(client,msgType,byt)
 		} else {
 			fmt.Println(err.Error())
@@ -55,16 +58,27 @@ func (client *Client) Read() {
 }
 
 func (client *Client) Write() {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println("write meet err:",err)
+			err = client.Conn.Close()
+			if err != nil {
+				fmt.Printf("recover中关闭conn出错：%s\n",err)
+			}
+		}
+	}()
 	for {
 		select {
 		case msg := <-client.Send:
 			if msg.MsgType == text {
 				byt,_ := json.Marshal(*msg)
+				fmt.Println(msg)
 				client.Conn.WriteMessage(websocket.TextMessage,byt)
 			}
 		case responseMsg := <-client.Response:
-			fmt.Println("write responseMsg :",*responseMsg)
+			fmt.Println("正在接收消息")
 			byt,_ := json.Marshal(*responseMsg)
+			fmt.Println(responseMsg)
 			client.Conn.WriteMessage(websocket.TextMessage,byt)
 		}
 	}

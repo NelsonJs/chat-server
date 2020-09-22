@@ -16,8 +16,8 @@ type Msg struct {
 	Avatar string
 	Gender int
 	Content string //文本内容
-	AppId int //1-android 2-ios 3-web
 	MsgType int //自定义的消息类型，跟websocket的不同
+	AppId int //1-android 2-ios 3-web
 }
 
 
@@ -27,7 +27,6 @@ func Parse(client *Client,msgType int, data []byte) {
 	if msgType == websocket.TextMessage {
 		var msg Msg
 		err := json.Unmarshal(data,&msg)
-		fmt.Println("parse----->",msg)
 		client.Uid = msg.Uid
 		if err == nil {
 			if msg.Cmd == "login" {
@@ -37,7 +36,6 @@ func Parse(client *Client,msgType int, data []byte) {
 			} else if msg.Cmd == "register" {
 				socketManager.Register <- client
 			} else if msg.Cmd == "send" {
-				fmt.Println("--cmd为send")
 				msg.sendMsg(client)
 			}
 		} else {

@@ -45,6 +45,7 @@ func main() {
 				fmt.Println(err)
 			}
 			fmt.Printf("客户端A接收到消息：%s\n",byt)
+
 		}
 	}()
 	msg.Cmd = "register"
