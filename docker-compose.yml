@@ -24,6 +24,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: "123456"
     container_name: tmysql
+    restart: on-failure
  redis:
     image: redis:6.0.5
     ports:
@@ -31,5 +32,6 @@ services:
     container_name: tredis
     command:
       redis-server
+    restart: on-failure
 
   

@@ -25,9 +25,36 @@ func initFile() {
 	gin.DefaultWriter = io.MultiWriter(f)
 }
 
-func Init() {
+func ListenRoute() {
 	initFile()
 	router := gin.Default()
+
+	conversation := router.Group("/conversation")
+	{
+		conversation.GET("/list", ConversationList)
+		conversation.GET("/record", ChatRecords)
+		conversation.POST("/delete", DelConversation)
+		conversation.POST("/revokeMsg", RevokeMsg)
+	}
+
+	group := router.Group("/group")
+	{
+		group.POST("/create", CreateGroup)
+		group.POST("/updatename", UpdateName)
+		group.POST("/addmanager", AddManager)
+		group.POST("/addmember", AddMember)
+		group.POST("/delmember", RemoveMember)
+		group.POST("/updateavater", AddAvatar)
+		group.POST("/transfer", Transfer) //转移群组
+		group.POST("/del", Del)           //解散群组
+		group.POST("/join", Join)
+		group.POST("/exit", Exit)
+	}
+
+	feedBack := router.Group("/help")
+	{
+		feedBack.POST("/inform") //举报
+	}
 
 	resource := router.Group("/resource")
 	{
@@ -37,5 +64,5 @@ func Init() {
 	httpPort := config.GetViperString("httpPort")
 	fmt.Println("httpPort:", httpPort)
 	router.GET("/api/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	router.Run(":8080")
+	router.Run(":5874")
 }

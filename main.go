@@ -1,6 +1,7 @@
 package main
 
 import (
+	"chat/routers"
 	"chat/socketservice"
 )
 
@@ -15,5 +16,6 @@ import (
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 // @host localhost:8080
 func main() {
-	socketservice.StartSocket()
+	go socketservice.StartSocket()
+	routers.ListenRoute()
 }

@@ -6,23 +6,24 @@ use demo;
 DROP TABLE IF EXISTS `msg`;
 create table msg(
 `id` bigint primary key auto_increment,
-`send_id` varchar(32) not null,
-`receive_id` varchar(32) not null,
-`group_id` varchar(32) default '',
+`uid` varchar(32) not null,
+`peerid` varchar(32) not null,
+`ctype` varchar(32) default '',
 `msg_type` int default 0,
 `content` varchar(255) default '',
-`status` int default 0 comment '0 发送成功 -1失败',
+`pic` varchar(255),
+`status` int default 0 comment '1 发送成功 -1失败',
 `create_time` bigint default 0
 );
 
--- 用户表
+-- 注册用户表
 DROP TABLE IF EXISTS `user`;
 create table user(
-`uid` bigint not null primary key auto_increment,
-`nick_name` varchar(255) default '',
+`id`  bigint primary key auto_increment,
+`uid` varchar(32) not null,
+`nickname` varchar(255) default '',
 `phone` varchar(24) default '',
 `gender` int default 0,
-`years_old` int default 0,
 `avatar` varchar(255) default '',
 `create_time` bigint default 0 comment '注册账号时间',
 `login_time` bigint default 0 comment '登录时间',
@@ -34,54 +35,37 @@ create table user(
 DROP TABLE IF EXISTS `friends`;
 create table friends(
 `id` bigint primary key auto_increment,
-`uid` varchar(255) not null,
+`uid` varchar(32) not null,
 `friend_id` varchar(255) not null,
 `group` varchar(24) default '' comment '分组'
 );
 
--- 活动表
-DROP TABLE IF EXISTS `active`;
-create table active(
-`id` bigint primary key auto_increment,
-`uid` bigint default 0,
-`title` varchar(255) default '',
-`description` varchar(255) default '',
-`img` varchar(255) default '',
-`gender` int default 0 comment '0-不限 1-男 2-女',
-`begin` bigint default 0,
-`loc` varchar(255) default '',
-`lng` float default 0,
-`lat` float default 0,
-`peopel_num` int default 0,
-`people_total_num` int default 0,
-`like` int default 0,
-`comment_num` bigint default 0,
-`comment_id` bigint default 0
+-- 群组表
+DROP TABLE IF EXISTS `cgroup`;
+CREATE TABLE cgroup(
+    `id` bigint primary key auto_increment,
+    `groupid` varchar(32) default '',
+    `name` varchar(24) default '',
+    `intro` varchar(255) default '',
+    `avatar` varchar(255) default '',
+    `ownerid` varchar(32) default '',
+    `helpers` json,
+    `members` json,
+    `grouptype` int default 0,
+    `status` int default 0,
+    `apply` int default 0,
+    `max` int default 0,
+    `maxhelper` int default 0
 );
 
--- 动态表
-DROP TABLE IF EXISTS `dynamic`;
-create table dynamic(
-`id` bigint primary key auto_increment,
-`uid` bigint default 0,
-`title` varchar(255) default '',
-`img` varchar(255) default '',
-`like` int default 0,
-`comment_id` int default 0,
-`loc` varchar(255) default '',
-`lat` float default 0,
-`lng` float default 0,
-`time` bigint default 0,
-`res_img` json default null
-);
 
 -- 个人介绍表
 DROP TABLE IF EXISTS `intro`;
 create table intro(
 `id` bigint primary key auto_increment,
-`uid` bigint not null,
+`uid` varchar(32) not null,
 `nickname` varchar(16) default '',
-`img_path` varchar(255) default '',
+`avatar` varchar(255) default '',
 `gender` int default 0,
 `years_old` int default 0,
 `habit` varchar(255) default '' comment '爱好',
@@ -89,9 +73,6 @@ create table intro(
 `curlocal` varchar(255) default '' comment '当前所在地',
 `xueli` varchar(30) default '' comment '学历',
 `job` varchar(16) default '' comment '职业',
-`shengao` int default 0 comment '身高',
-`tizhong` int default 0 comment '体重',
-`love_word` varchar(255) default '' comment '恋爱宣言'
 );
 
 -- 图片资源表
