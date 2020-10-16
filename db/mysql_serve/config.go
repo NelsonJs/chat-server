@@ -7,13 +7,13 @@ import (
 )
 
 var (
-	db  *gorm.DB
+	Db  *gorm.DB
 	err error
 )
 
 func init() {
-	dsn := "root:123456@tcp(127.0.0.1:3310)/demo?charset=utf8mb4"
-	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+	dsn := "root:123456@tcp(localhost:3310)/demo?charset=utf8mb4"
+	Db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{SingularTable: true},
 	})
 }

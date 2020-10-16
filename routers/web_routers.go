@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"chat/business"
 	"chat/config"
 	"fmt"
 	"io"
@@ -51,6 +52,17 @@ func ListenRoute() {
 		group.POST("/exit", Exit)
 	}
 
+	index := router.Group("/index")
+	{
+		index.GET("/neardynamic",business.NearDynamicList) //首页动态列表
+	}
+
+	comments := router.Group("/comment")
+	{
+		comments.GET("/list",business.GetComments)
+		comments.POST("/create",business.InsertComment)
+	}
+
 	feedBack := router.Group("/help")
 	{
 		feedBack.POST("/inform") //举报
@@ -58,11 +70,12 @@ func ListenRoute() {
 
 	resource := router.Group("/resource")
 	{
-		resource.StaticFS("/upload", http.Dir("/dist/images"))
 
+		resource.StaticFS("/upload", http.Dir("/dist/images"))
+		//resource.StaticFS("/upload", http.Dir("D:/GoWork/active_img"))
 	}
 	httpPort := config.GetViperString("httpPort")
 	fmt.Println("httpPort:", httpPort)
 	router.GET("/api/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	router.Run(":5874")
+	router.Run(":"+httpPort)
 }

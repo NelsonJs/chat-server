@@ -8,6 +8,7 @@ services:
     ports:
       - "8080:8080"
       - "7979:7979"
+      - "5874:5874"
     volumes:
       - D:/GoWork/active_img:/dist/images/
     build:
@@ -17,14 +18,15 @@ services:
  db:
     image: mysql:8.0
     volumes:
-      - ./db/mysql_serve/init:/docker-entrypoint-initdb.d/
+      - ./db/mysql_serve/init:/docker-entrypoint-initdb.d
+      - D:/GoWork/dockerspace:/var/lib/mysql
     ports:
       - "3310:3306"
     command: --default-authentication-plugin=mysql_native_password 
     environment:
       MYSQL_ROOT_PASSWORD: "123456"
     container_name: tmysql
-    restart: on-failure
+    restart: always
  redis:
     image: redis:6.0.5
     ports:

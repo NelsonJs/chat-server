@@ -33,7 +33,7 @@ func CreateGroup(ownerId, name, avatar string, groupType int) (bool, error) {
 	builder.WriteString(strconv.FormatInt(time.Now().Unix(), 10))
 	groupId := utils.Md5(builder.String())
 	group := Cgroup{GroupId: groupId, OwnerId: ownerId, Name: name, Avatar: avatar, GroupType: groupType}
-	tx := db.Create(&group)
+	tx := Db.Create(&group)
 	if tx.Error != nil {
 		config.Log.Error(tx.Error.Error())
 		return false, tx.Error
@@ -43,7 +43,7 @@ func CreateGroup(ownerId, name, avatar string, groupType int) (bool, error) {
 
 func UpdateName(groupId, name string) (bool, error) {
 	defer catchErr()
-	tx := db.Model(&Cgroup{}).Where("groupid = ?", groupId).Update("name", name)
+	tx := Db.Model(&Cgroup{}).Where("groupid = ?", groupId).Update("name", name)
 	if tx.Error != nil {
 		config.Log.Error(tx.Error.Error())
 		return false, tx.Error
@@ -55,7 +55,7 @@ func UpdateName(groupId, name string) (bool, error) {
 func AddMember(groupId, uid string) (bool, error) {
 	defer catchErr()
 	var group Cgroup
-	tx := db.Where("groupid=?", groupId).First(&group)
+	tx := Db.Where("groupid=?", groupId).First(&group)
 	if tx.Error != nil {
 		return false, tx.Error
 	} else {
@@ -64,7 +64,7 @@ func AddMember(groupId, uid string) (bool, error) {
 			members = make([]string, 0)
 		}
 		members = append(members, uid)
-		tx := db.Where("groupid = ?", groupId).Update("members", members)
+		tx := Db.Where("groupid = ?", groupId).Update("members", members)
 		if tx.Error != nil {
 			return false, tx.Error
 		}
