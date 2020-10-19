@@ -16,12 +16,13 @@ type Dynamics struct {
 	Title string `json:"title"`
 	Avatar string `json:"avatar"`
 	Gender int `json:"gender"`
-	Like int64 `json:"likeNum"`
-	Loc string `json:"location"`
+	Likenum int64 `json:"likeNum"`
+	Liked int `json:"liked"`
+	Location string `json:"location"`
 	Lat float64 `json:"lat"`
 	Lng float64 `json:"lng"`
 	Createtime int64 `json:"createTime"`
-	ResImg json.RawMessage `json:"resImg"`
+	Resimg json.RawMessage `json:"resImg"`
 	Description string `json:"desc"`
 }
 
@@ -68,13 +69,16 @@ func GetDynamics() ([]*map[string]interface{},error){
 type Comments struct {
 	Id string `json:"-"`
 	Did string `json:"commentId"`
+	Cid string `json:"cid"`
 	Content string `json:"content"`
 	Uid string `json:"uid"`
-	Ateuid string `json:"ateUid"`
 	Nickname string `json:"nickname"`
-	Atenickname string `json:"ateNickname"`
+	Likenum int64 `json:"likenum"`
+	Status int `json:"status"`
+	Reply json.RawMessage `json:"reply"`
 	Createtime int64 `json:"createTime"`
 }
+
 
 func InsertComments(c *Comments) error {
 	tx := mysql_serve.Db.Create(c)
