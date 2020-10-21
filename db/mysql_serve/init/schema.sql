@@ -121,7 +121,7 @@ create table comments(
 `id` bigint primary key auto_increment,
 `did` varchar(32) not null comment '动态的id',
 `cid` varchar(32) comment '评论id',
-`reply` json comment '[id:223,uid:100,nickname:mr peng,content:11,replyuid:101,replynickname:mr wang,likenum:43]',
+`reply` json comment '[{id:223,uid:100,nickname:mr peng,content:11,replyuid:101,replynickname:mr wang,likenum:43}]',
 `content` varchar(255) default '',
 `uid` varchar(32) not null comment '评论人的uid',
 `nickname` varchar(32) default '' comment '评论人的昵称',
@@ -130,5 +130,10 @@ create table comments(
 `createtime` int default 0
 );
 insert into comments(did, cid,content, uid, nickname,createtime)values('asdfg','qqqs','这是留言','100','Mr Peng',1602663648);
-insert into comments(did, cid,content, uid, nickname, reply,createtime) values ('asdfg','fegd','this is reply msg','101','MS Wang','[{"id":"feag","uid":"100","nickname":"mr peng","content":"回复了哈","replyuid":"101","replynickname":"mr wang","likenum":"43"]}',1602673648);
+insert into comments(did, cid,content, uid, nickname, reply,createtime) values ('asdfg','fegd','this is reply msg','101','MS Wang','[{"id":"feag","uid":"100","nickname":"mr peng","content":"回复了哈","replyuid":"101","replynickname":"mr wang","likenum":"43"}]',1602673648);
 insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg','rtgd','this is reply msg','102','MS Tong',1602683688);
+insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg','geg','this is reply msg','102','MS Tong',1602683688);
+insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg','gewgw','你是真不错呀','102','MS Tong',1602683688);
+insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg','vvda','很好很好','102','MS Tong',1602683688);
+insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg','yrh','哈哈哈','102','MS Tong',1602683688);
+insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg','qreb','不错噢','102','MS Tong',1602683688);
