@@ -9,7 +9,7 @@ import (
 )
 
 type Dynamics struct {
-	Id string `json:"-"`
+	Id int64 `json:"-"`
 	Did string `json:"did"`
 	Uid string `json:"uid"`
 	Nickname string `json:"nickname"`
@@ -62,6 +62,11 @@ func GetDynamics() ([]*map[string]interface{},error){
 		}
 	}
 	return list,nil
+}
+
+func InsertDynamic(dy *Dynamics) error {
+	tx := mysql_serve.Db.Create(dy)
+	return tx.Error
 }
 
 

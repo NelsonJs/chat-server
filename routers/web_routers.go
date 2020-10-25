@@ -55,6 +55,7 @@ func ListenRoute() {
 	index := router.Group("/index")
 	{
 		index.GET("/neardynamic",business.NearDynamicList) //首页动态列表
+		index.POST("/dynamic",business.InsertDynamic)
 	}
 
 	comments := router.Group("/comment")
@@ -71,8 +72,9 @@ func ListenRoute() {
 	resource := router.Group("/resource")
 	{
 
-		resource.StaticFS("/upload", http.Dir("/dist/images"))
-		//resource.StaticFS("/upload", http.Dir("D:/GoWork/active_img"))
+		//resource.StaticFS("/upload", http.Dir("/dist/images"))
+		resource.StaticFS("/image/list", http.Dir("D:/GoWork/active_img"))
+		resource.POST("/image/dynamic/",business.GetUploadDynamicImage)
 	}
 	httpPort := config.GetViperString("httpPort")
 	fmt.Println("httpPort:", httpPort)

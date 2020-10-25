@@ -2,8 +2,10 @@ package business
 
 import (
 	"chat/db/mysql_serve/businessdb"
+	"chat/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 
@@ -21,6 +23,27 @@ func NearDynamicList(c *gin.Context) {
 		"code":-1,
 		"msg":err.Error(),
 	})
+}
+
+func InsertDynamic(c *gin.Context) {
+	var dy businessdb.Dynamics
+	if err := c.ShouldBindJSON(&dy); err != nil {
+		c.JSON(http.StatusOK,gin.H{
+			"code":-1,
+			"data":err.Error(),
+		})
+		return
+	}
+	if dy.Uid == "" {
+		c.JSON(http.StatusOK,gin.H{
+			"code":-1,
+			"data":"参数缺失",
+		})
+		return
+	}
+	dy.Createtime = time.Now().Unix()
+	dy.Did = utils.Md5WithTime(dy.Uid)
+	businessdb.InsertDynamic(&dy)
 }
 
 func GetComments(c *gin.Context) {
