@@ -3,7 +3,9 @@ package businessdb
 import (
 	"chat/config"
 	"chat/db/mysql_serve"
+	"database/sql/driver"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"reflect"
 )
@@ -22,8 +24,33 @@ type Dynamics struct {
 	Lat float64 `json:"lat"`
 	Lng float64 `json:"lng"`
 	Createtime int64 `json:"createTime"`
-	Resimg json.RawMessage `json:"resImg"`
+	Resimg JSON `json:"resImg"`
 	Description string `json:"desc"`
+}
+
+type JSON struct {
+	json.RawMessage
+}
+
+// Value get value of JSON
+func (j JSON) Value() (driver.Value, error) {
+	if len(j.RawMessage) == 0 {
+		return nil, nil
+	}
+	return j.MarshalJSON()
+}
+
+// Scan scan value into JSON
+func (j *JSON) Scan(value interface{}) error {
+	str, ok := value.(string)
+	if ok {
+		bytes := []byte(str)
+		return json.Unmarshal(bytes, j)
+	}
+	if reflect.ValueOf(value).Kind() == reflect.Slice {
+		return json.Unmarshal(reflect.ValueOf(value).Bytes(),j)
+	}
+	return errors.New(fmt.Sprint("Failed to unmarshal JSONB value (strcast):", value))
 }
 
 

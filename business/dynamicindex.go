@@ -3,6 +3,7 @@ package business
 import (
 	"chat/db/mysql_serve/businessdb"
 	"chat/utils"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
@@ -30,20 +31,32 @@ func InsertDynamic(c *gin.Context) {
 	if err := c.ShouldBindJSON(&dy); err != nil {
 		c.JSON(http.StatusOK,gin.H{
 			"code":-1,
-			"data":err.Error(),
+			"msg":err.Error(),
 		})
 		return
 	}
 	if dy.Uid == "" {
 		c.JSON(http.StatusOK,gin.H{
 			"code":-1,
-			"data":"参数缺失",
+			"msg":"参数缺失",
 		})
 		return
 	}
+	fmt.Println(dy.Resimg)
 	dy.Createtime = time.Now().Unix()
 	dy.Did = utils.Md5WithTime(dy.Uid)
-	businessdb.InsertDynamic(&dy)
+	err := businessdb.InsertDynamic(&dy)
+	if err != nil {
+		c.JSON(http.StatusOK,gin.H{
+			"code":-1,
+			"msg":err.Error(),
+		})
+	} else {
+		c.JSON(http.StatusOK,gin.H{
+			"code":1,
+			"msg":"发布成功",
+		})
+	}
 }
 
 func GetComments(c *gin.Context) {
