@@ -27,6 +27,7 @@ create table user(
 `uid` varchar(32) not null,
 `nickname` varchar(255) default '',
 `phone` varchar(24) default '',
+`pwd` varchar(24) default '',
 `gender` int default 0,
 `avatar` varchar(255) default '',
 `create_time` bigint default 0 comment '注册账号时间',
