@@ -65,7 +65,7 @@ func Login(c *gin.Context) {
 			})
 		} else {
 			c.JSON(http.StatusOK,gin.H{
-				"code": -1,
+				"code": 1,
 				"data":u,
 			})
 		}

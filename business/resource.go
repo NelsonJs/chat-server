@@ -1,6 +1,7 @@
 package business
 
 import (
+	"chat/config"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -17,8 +18,11 @@ func GetUploadDynamicImage(c *gin.Context) {
 	files := mf.File["uploads"]
 	urls := make([]string,0)
 	for _,file := range files {
-		var url = "http://192.168.0.109:8080/resource/image/list/"+file.Filename
-		err := c.SaveUploadedFile(file,"D:/GoWork/active_img/"+file.Filename)
+		iPath := config.GetViperString("imagePathIp")
+		httpPort := config.GetViperString("httpPort")
+		imageSavePath := config.GetViperString("imageSavePath")
+		var url = "http://"+iPath+":"+httpPort+"/resource/image/list/"+file.Filename
+		err := c.SaveUploadedFile(file,imageSavePath+file.Filename)
 		if err != nil{
 			c.JSON(http.StatusOK,gin.H{
 				"code":-1,

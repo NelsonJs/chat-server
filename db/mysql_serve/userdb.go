@@ -1,5 +1,10 @@
 package mysql_serve
 
+import (
+	"chat/constants"
+	"gorm.io/gorm"
+)
+
 type User struct {
 	Id int64 `json:"-"`
 	Uid string `json:"uid"`
@@ -15,11 +20,38 @@ type User struct {
 }
 
 func RegisterToDb(user *User) error {
-	tx := Db.Create(user)
+	pwd := user.Pwd
+	phone := user.Phone
+	if pwd == "" || phone == ""{
+		return constants.ErrArgumentNotExists
+	}
+	var u User
+	tx := Db.Where("phone = ?",user.Phone).First(&u)
+	if tx.Error != nil && tx.Error != gorm.ErrRecordNotFound{
+		return tx.Error
+	} else if u.Uid != "" {
+		return constants.ErrUserHasRegister
+	}
+	tx = Db.Create(user)
 	return tx.Error
 }
 
 func LoginToDb(user *User) error {
-	tx := Db.Model(user).Where("uid = ?",user.Uid).Update("login_time",user.Login_time)
+	pwd := user.Pwd
+	phone := user.Phone
+	if pwd == "" || phone == ""{
+		return constants.ErrArgumentNotExists
+	}
+	var u User
+	tx := Db.Where("phone = ? and pwd = ?",user.Phone,user.Pwd).First(&u)
+	if tx.Error != nil {
+		if tx.Error == gorm.ErrRecordNotFound {
+			return constants.ErrUserNotExists
+		}
+		return tx.Error
+	} else if u.Uid == "" {
+		return constants.ErrUserNotExists
+	}
+	tx = Db.Model(user).Where("phone = ?",user.Phone).Update("login_time",user.Login_time)
 	return tx.Error
 }
