@@ -102,13 +102,21 @@ type Comments struct {
 	Id string `json:"-"`
 	Did string `json:"commentId"`
 	Cid string `json:"cid"`
+	Fid string `json:"fid"`
+	Pid string `json:"pid"`
 	Content string `json:"content"`
 	Uid string `json:"uid"`
 	Nickname string `json:"nickname"`
+	ReplyUid string `json:"replyuid"`
+	Replyname string `json:"replyname"`
 	Likenum int64 `json:"likenum"`
 	Status int `json:"status"`
-	Reply json.RawMessage `json:"reply"`
 	Createtime int64 `json:"createTime"`
+}
+
+type CommentList struct {
+	Comment Comments `json:"comment"`
+	Comments []Comments `json:"comments"`
 }
 
 
@@ -117,8 +125,24 @@ func InsertComments(c *Comments) error {
 	return tx.Error
 }
 
-func GetComments(did string) (error,[]*Comments){
-	var comments []*Comments
-	tx := mysql_serve.Db.Order("createtime desc").Where("did = ?",did).Find(&comments)
-	return tx.Error,comments
+func GetComments(did string) (error,[]*CommentList){
+	var comments []Comments
+	tx := mysql_serve.Db.Order("createtime desc").Where("did = ? and fid is null",did).Find(&comments)
+	list := make([]*CommentList,0)
+	fmt.Println("第一级评论数量：",len(comments))
+	if tx.Error == nil && comments != nil{
+		fmt.Println("执行！！")
+		for _,v := range comments {
+			var commentList CommentList
+			var replyComments []Comments
+			tx = mysql_serve.Db.Order("createtime desc").Where("did = ? and fid = ?",did,v.Cid).Find(&replyComments)
+			commentList.Comment = v
+			if  len(replyComments) > 0{
+				fmt.Println("replyComments数量：",replyComments)
+				commentList.Comments = replyComments
+			}
+			list = append(list, &commentList)
+		}
+	}
+	return tx.Error,list
 }

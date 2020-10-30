@@ -116,22 +116,26 @@ CREATE  TABLE dynamics(
 insert into dynamics(did,title, uid, nickname, avatar, likenum, liked, location, lat, lng, createtime, resimg, gender, description)
 values ('asdfg','今天天气真好噢，大家一起出来玩~~','100','Mr Peng','',59,1,'厦门市湖里区',0.0,0.0,1602663648,NULL,1,'就在那个体育场');
 
+
 -- 评论表
 DROP TABLE IF EXISTS `comments`;
 create table comments(
 `id` bigint primary key auto_increment,
-`did` varchar(32) not null comment '动态的id',
+`did` varchar(32) not null default '' comment '动态的id',
 `cid` varchar(32) comment '评论id',
-`reply` json comment '[{id:223,uid:100,nickname:mr peng,content:11,replyuid:101,replynickname:mr wang,likenum:43}]',
+`fid` varchar(32) comment '一级评论id',
+`pid` varchar(32) comment '父评论id',
 `content` varchar(255) default '',
-`uid` varchar(32) not null comment '评论人的uid',
+`uid` varchar(32) not null default '' comment '评论人的uid',
 `nickname` varchar(32) default '' comment '评论人的昵称',
+`replyuid` varchar(32) not null default '' comment '被评论人的uid',
+`replyname` varchar(32) default '' comment '被评论人的昵称',
 `likenum` int default 0 comment '点赞数量',
 `status` int default 0 comment '状态 0正常',
 `createtime` int default 0
 );
 insert into comments(did, cid,content, uid, nickname,createtime)values('asdfg','qqqs','这是留言','100','Mr Peng',1602663648);
-insert into comments(did, cid,content, uid, nickname, reply,createtime) values ('asdfg','fegd','this is reply msg','101','MS Wang','[{"id":"feag","uid":"100","nickname":"mr peng","content":"回复了哈","replyuid":"101","replynickname":"mr wang","likenum":"43"}]',1602673648);
+insert into comments(did, cid,fid,pid,content, uid, nickname, replyuid,replyname,createtime) values ('asdfg','fegd','qqqs','qqqs','this is reply msg','101','MS Wang','100','Mr Peng',1602673648);
 insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg','rtgd','this is reply msg','102','MS Tong',1602683688);
 insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg','geg','this is reply msg','102','MS Tong',1602683688);
 insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg','gewgw','你是真不错呀','102','MS Tong',1602683688);
