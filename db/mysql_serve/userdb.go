@@ -36,22 +36,22 @@ func RegisterToDb(user *User) error {
 	return tx.Error
 }
 
-func LoginToDb(user *User) error {
+func LoginToDb(user *User) (error,*User) {
 	pwd := user.Pwd
 	phone := user.Phone
 	if pwd == "" || phone == ""{
-		return constants.ErrArgumentNotExists
+		return constants.ErrArgumentNotExists,nil
 	}
 	var u User
 	tx := Db.Where("phone = ? and pwd = ?",user.Phone,user.Pwd).First(&u)
 	if tx.Error != nil {
 		if tx.Error == gorm.ErrRecordNotFound {
-			return constants.ErrUserNotExists
+			return constants.ErrUserNotExists,nil
 		}
-		return tx.Error
+		return tx.Error,nil
 	} else if u.Uid == "" {
-		return constants.ErrUserNotExists
+		return constants.ErrUserNotExists,nil
 	}
 	tx = Db.Model(user).Where("phone = ?",user.Phone).Update("login_time",user.Login_time)
-	return tx.Error
+	return tx.Error,&u
 }

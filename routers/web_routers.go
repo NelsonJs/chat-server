@@ -68,6 +68,7 @@ func ListenRoute() {
 	{
 		comments.GET("/list",business.GetComments)
 		comments.POST("/create",business.InsertComment)
+		comments.POST("/like",business.LikeComment)
 	}
 
 	feedBack := router.Group("/help")

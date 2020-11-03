@@ -91,6 +91,9 @@ func InsertComment(c *gin.Context) {
 		})
 		return
 	}
+	cid := utils.Md5WithTime(comment.Uid+comment.Did)
+	comment.Cid = cid
+	comment.Createtime = time.Now().Unix()
 	err := businessdb.InsertComments(&comment)
 	if err != nil {
 		c.JSON(http.StatusOK,gin.H{
@@ -100,7 +103,37 @@ func InsertComment(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK,gin.H{
 			"code":1,
-			"msg":"create successful",
+			"data":comment,
+		})
+	}
+}
+
+func LikeComment(c *gin.Context) {
+	var comment businessdb.Comments
+	if err := c.ShouldBindJSON(&comment); err != nil {
+		c.JSON(http.StatusOK,gin.H{
+			"code":-1,
+			"msg":err.Error(),
+		})
+		return
+	}
+	if comment.Cid == "" {
+		c.JSON(http.StatusOK,gin.H{
+			"code":-1,
+			"msg":"cid为空",
+		})
+		return
+	}
+	err,co := businessdb.LikeComment(comment.Cid)
+	if err != nil {
+		c.JSON(http.StatusOK,gin.H{
+			"code":-1,
+			"msg":err.Error(),
+		})
+	} else {
+		c.JSON(http.StatusOK,gin.H{
+			"code":-1,
+			"data":co,
 		})
 	}
 }

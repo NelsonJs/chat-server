@@ -4,5 +4,5 @@ httpPort: 8080
 webSocketPort: 6767
 httpUrl: 127.0.0.1:8080
 webSocketUrl: 127.0.0.1:7979
-imagePathIp: 192.168.1.7
+imagePathIp: 192.168.0.106
 imageSavePath: D:/GoWork/active_img/

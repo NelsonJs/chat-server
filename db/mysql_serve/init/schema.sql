@@ -142,3 +142,17 @@ insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg'
 insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg','vvda','很好很好','102','MS Tong',1602683688);
 insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg','yrh','哈哈哈','102','MS Tong',1602683688);
 insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg','qreb','不错噢','102','MS Tong',1602683688);
+
+-- 点赞表
+DROP TABLE IF EXISTS `likes`;
+create table likes(
+`id` bigint primary key auto_increment,
+`did` varchar(32) default '' comment '动态的id',
+`cid` varchar(32) default '' comment '评论id',
+`liked` int default 0 comment '0没有点赞 1点赞',
+`createtime` int default 0
+);
+
+insert into likes(cid, liked, createtime) values ('574423fd940a549c1979ec0eee747324',1,1602693688);
+insert into likes(cid, liked, createtime) values ('827b1d024b564e5eaaef13856fad195c',1,1602753688);
+insert into likes(cid, liked, createtime) values ('87d797d1d28331788019c6668d59ecbe',1,1602883688);

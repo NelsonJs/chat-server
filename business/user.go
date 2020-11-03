@@ -57,7 +57,8 @@ func Login(c *gin.Context) {
 		})
 	} else {
 		u.Login_time = time.Now().Unix()
-		err := mysql_serve.LoginToDb(&u)
+		var user *mysql_serve.User
+		err,user := mysql_serve.LoginToDb(&u)
 		if err != nil {
 			c.JSON(http.StatusOK,gin.H{
 				"code": -1,
@@ -66,7 +67,7 @@ func Login(c *gin.Context) {
 		} else {
 			c.JSON(http.StatusOK,gin.H{
 				"code": 1,
-				"data":u,
+				"data":user,
 			})
 		}
 	}

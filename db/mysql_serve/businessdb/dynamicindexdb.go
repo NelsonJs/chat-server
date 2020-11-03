@@ -7,7 +7,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"gorm.io/gorm"
 	"reflect"
+	"time"
 )
 
 type Dynamics struct {
@@ -99,17 +101,18 @@ func InsertDynamic(dy *Dynamics) error {
 
 //comments
 type Comments struct {
-	Id string `json:"-"`
-	Did string `json:"commentId"`
+	Id int64 `json:"-"`
+	Did string `json:"dId"`
 	Cid string `json:"cid"`
 	Fid string `json:"fid"`
 	Pid string `json:"pid"`
 	Content string `json:"content"`
 	Uid string `json:"uid"`
 	Nickname string `json:"nickname"`
-	ReplyUid string `json:"replyuid"`
+	Replyuid string `json:"replyuid"`
 	Replyname string `json:"replyname"`
 	Likenum int64 `json:"likenum"`
+	Liked bool `json:"liked"`
 	Status int `json:"status"`
 	Createtime int64 `json:"createTime"`
 }
@@ -125,24 +128,84 @@ func InsertComments(c *Comments) error {
 	return tx.Error
 }
 
+//获取评论的地方需要放入缓存，否则容易爆炸
 func GetComments(did string) (error,[]*CommentList){
 	var comments []Comments
-	tx := mysql_serve.Db.Order("createtime desc").Where("did = ? and fid is null",did).Find(&comments)
+	tx := mysql_serve.Db.Order("createtime desc").Where("did = ? and (fid is null or fid = '')",did).Find(&comments)
 	list := make([]*CommentList,0)
 	fmt.Println("第一级评论数量：",len(comments))
 	if tx.Error == nil && comments != nil{
 		fmt.Println("执行！！")
 		for _,v := range comments {
+			var like Likes
+			tx = mysql_serve.Db.Where("cid = ?",v.Cid).First(&like)
+			if tx.Error == nil || tx.Error == gorm.ErrRecordNotFound{
+				if like.Liked == 1 {
+					v.Liked = true
+				} else {
+					v.Liked = false
+				}
+			}
 			var commentList CommentList
 			var replyComments []Comments
-			tx = mysql_serve.Db.Order("createtime desc").Where("did = ? and fid = ?",did,v.Cid).Find(&replyComments)
+			tx = mysql_serve.Db.Order("createtime asc").Where("did = ? and fid = ?",did,v.Cid).Find(&replyComments)
 			commentList.Comment = v
 			if  len(replyComments) > 0{
 				fmt.Println("replyComments数量：",replyComments)
+				for i := 0; i < len(replyComments); i++ {
+					var like Likes
+					tx = mysql_serve.Db.Where("cid = ?",replyComments[i].Cid).First(&like)
+					if tx.Error == nil || tx.Error == gorm.ErrRecordNotFound{
+						if like.Liked == 1 {
+							replyComments[i].Liked = true
+						} else {
+							replyComments[i].Liked = false
+						}
+					}
+				}
 				commentList.Comments = replyComments
 			}
 			list = append(list, &commentList)
 		}
 	}
 	return tx.Error,list
+}
+
+type Likes struct {
+	Id int64 `json:"-"`
+	Did string `json:"did"`
+	Cid string `json:"cid"`
+	Liked int `json:"liked"`
+	Createtime int64 `json:"createtime"`
+}
+
+func LikeComment(cid string) (error, *Comments) {
+	var like Likes
+	tx := mysql_serve.Db.Where("cid = ?",cid).First(&like)
+	if tx.Error != nil && tx.Error != gorm.ErrRecordNotFound{
+		return tx.Error,nil
+	}
+	var comment Comments
+	tx = mysql_serve.Db.Where("cid = ?",cid).First(&comment)
+	if tx.Error != nil {
+		return tx.Error,&comment
+	}
+	var likeNum int64
+	if like.Liked == 1 {
+		likeNum = comment.Likenum - 1
+		comment.Liked = false
+	} else {
+		likeNum = comment.Likenum + 1
+		comment.Liked = true
+	}
+	comment.Likenum = likeNum
+
+	mysql_serve.Db.Model(&Comments{}).Where("cid = ?",cid).Update("likenum",likeNum)
+	if like.Cid == "" {
+		like.Cid = cid
+		like.Liked = 1
+		like.Createtime = time.Now().Unix()
+		mysql_serve.Db.Create(&like)
+	}
+	return nil,&comment
 }
