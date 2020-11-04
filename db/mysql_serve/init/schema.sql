@@ -103,7 +103,6 @@ CREATE  TABLE dynamics(
 `nickname` varchar(16) default '',
 `avatar` varchar(255) default '',
 `likenum` int default 0,
-`liked` tinyint(1) default 0 comment '0没有点赞 1点赞了',
 `location` varchar(128) default '',
 `lat` float default 0.0,
 `lng` float default 0.0,
@@ -113,8 +112,8 @@ CREATE  TABLE dynamics(
 `description` varchar(255) default ''
 );
 
-insert into dynamics(did,title, uid, nickname, avatar, likenum, liked, location, lat, lng, createtime, resimg, gender, description)
-values ('asdfg','今天天气真好噢，大家一起出来玩~~','100','Mr Peng','',59,1,'厦门市湖里区',0.0,0.0,1602663648,NULL,1,'就在那个体育场');
+insert into dynamics(did,title, uid, nickname, avatar, likenum, location, lat, lng, createtime, resimg, gender, description)
+values ('asdfg','今天天气真好噢，大家一起出来玩~~','100','Mr Peng','',59,'厦门市湖里区',0.0,0.0,1602663648,NULL,1,'就在那个体育场');
 
 
 -- 评论表
@@ -147,12 +146,13 @@ insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg'
 DROP TABLE IF EXISTS `likes`;
 create table likes(
 `id` bigint primary key auto_increment,
+`uid` varchar(32) not null,
 `did` varchar(32) default '' comment '动态的id',
 `cid` varchar(32) default '' comment '评论id',
 `liked` int default 0 comment '0没有点赞 1点赞',
 `createtime` int default 0
 );
 
-insert into likes(cid, liked, createtime) values ('574423fd940a549c1979ec0eee747324',1,1602693688);
-insert into likes(cid, liked, createtime) values ('827b1d024b564e5eaaef13856fad195c',1,1602753688);
-insert into likes(cid, liked, createtime) values ('87d797d1d28331788019c6668d59ecbe',1,1602883688);
+insert into likes(uid,cid, liked, createtime) values (100,'574423fd940a549c1979ec0eee747324',1,1602693688);
+insert into likes(uid,cid, liked, createtime) values (100,'827b1d024b564e5eaaef13856fad195c',1,1602753688);
+insert into likes(uid,cid, liked, createtime) values (100,'87d797d1d28331788019c6668d59ecbe',1,1602883688);

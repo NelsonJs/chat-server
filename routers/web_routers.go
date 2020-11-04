@@ -62,6 +62,7 @@ func ListenRoute() {
 	{
 		index.GET("/neardynamic",business.NearDynamicList) //首页动态列表
 		index.POST("/dynamic",business.InsertDynamic)
+		index.POST("/dynamic/like",business.LikeDynamic)
 	}
 
 	comments := router.Group("/comment")

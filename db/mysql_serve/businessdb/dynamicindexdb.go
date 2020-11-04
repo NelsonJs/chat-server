@@ -21,7 +21,7 @@ type Dynamics struct {
 	Avatar string `json:"avatar"`
 	Gender int `json:"gender"`
 	Likenum int64 `json:"likeNum"`
-	Liked int `json:"liked"`
+	Liked bool `json:"liked"`
 	Location string `json:"location"`
 	Lat float64 `json:"lat"`
 	Lng float64 `json:"lng"`
@@ -69,7 +69,7 @@ func Struct2Map(obj interface{}) map[string]interface{} {
 }
 
 
-func GetDynamics() ([]*map[string]interface{},error){
+func GetDynamics(uid string) ([]*map[string]interface{},error){
 	var data []Dynamics
 	tx := mysql_serve.Db.Order("createtime desc").Find(&data)
 	if tx.Error != nil {
@@ -79,6 +79,13 @@ func GetDynamics() ([]*map[string]interface{},error){
 	if data != nil && len(data) > 0 {
 		fmt.Println(len(data))
 		for _,v := range data {
+			if uid != "" {
+				var like Likes
+				tx = mysql_serve.Db.Where("uid = ? and did = ?",uid,v.Did).First(&like)
+				if tx != nil && tx.Error != gorm.ErrRecordNotFound {
+					v.Liked = true
+				}
+			}
 			err,comments := GetComments(v.Did)
 			if err != nil {
 				fmt.Println(err.Error())
@@ -173,39 +180,99 @@ func GetComments(did string) (error,[]*CommentList){
 
 type Likes struct {
 	Id int64 `json:"-"`
+	Uid string `json:"uid"`
 	Did string `json:"did"`
 	Cid string `json:"cid"`
 	Liked int `json:"liked"`
 	Createtime int64 `json:"createtime"`
 }
 
-func LikeComment(cid string) (error, *Comments) {
-	var like Likes
-	tx := mysql_serve.Db.Where("cid = ?",cid).First(&like)
-	if tx.Error != nil && tx.Error != gorm.ErrRecordNotFound{
-		return tx.Error,nil
-	}
-	var comment Comments
-	tx = mysql_serve.Db.Where("cid = ?",cid).First(&comment)
-	if tx.Error != nil {
-		return tx.Error,&comment
-	}
-	var likeNum int64
-	if like.Liked == 1 {
-		likeNum = comment.Likenum - 1
-		comment.Liked = false
-	} else {
-		likeNum = comment.Likenum + 1
-		comment.Liked = true
-	}
-	comment.Likenum = likeNum
+func LikeDynamic(uid, did string) (error,*Dynamics) {
+	var dy Dynamics
+	mysql_serve.Db.Transaction(func(tx *gorm.DB) error {
+		var like Likes
+		t := tx.Where("uid = ? and did = ?",uid,did).First(&like)
+		if t.Error != nil && t.Error != gorm.ErrRecordNotFound{
+			return t.Error
+		}
+		t = tx.Where("did = ?",did).First(&dy)
+		if t.Error != nil {
+			return t.Error
+		}
+		var likeNum int64
+		if like.Liked == 1 {
+			likeNum = dy.Likenum - 1
+			dy.Liked = false
+			t = tx.Where("uid = ? and did = ?",uid,did).Delete(&like)
+			if t.Error != nil {
+				return t.Error
+			}
+		} else {
+			likeNum = dy.Likenum + 1
+			dy.Liked = true
 
-	mysql_serve.Db.Model(&Comments{}).Where("cid = ?",cid).Update("likenum",likeNum)
-	if like.Cid == "" {
-		like.Cid = cid
-		like.Liked = 1
-		like.Createtime = time.Now().Unix()
-		mysql_serve.Db.Create(&like)
-	}
+			like.Did = did
+			like.Uid = uid
+			like.Liked = 1
+			like.Createtime = time.Now().Unix()
+			t = tx.Create(&like)
+			if t.Error != nil {
+				return t.Error
+			}
+		}
+		dy.Likenum = likeNum
+
+		t = tx.Model(&Dynamics{}).Where("did = ?",did).Update("likenum",likeNum)
+		if t.Error != nil {
+			return t.Error
+		}
+		return nil
+	})
+
+	return nil,&dy
+}
+
+func LikeComment(uid,cid string) (error, *Comments) {
+	var comment Comments
+	mysql_serve.Db.Transaction(func(tx *gorm.DB) error {
+		var like Likes
+		t := tx.Where("uid = ? and cid = ?",uid,cid).First(&like)
+		if t.Error != nil && t.Error != gorm.ErrRecordNotFound{
+			return t.Error
+		}
+		t = tx.Where("cid = ?",cid).First(&comment)
+		if t.Error != nil {
+			return t.Error
+		}
+		var likeNum int64
+		if like.Liked == 1 {
+			likeNum = comment.Likenum - 1
+			comment.Liked = false
+			t = tx.Where("uid = ? and cid = ?",uid,cid).Delete(&like)
+			if t.Error != nil {
+				return t.Error
+			}
+		} else {
+			likeNum = comment.Likenum + 1
+			comment.Liked = true
+
+			like.Cid = cid
+			like.Uid = uid
+			like.Liked = 1
+			like.Createtime = time.Now().Unix()
+			t = tx.Create(&like)
+			if t.Error != nil {
+				return t.Error
+			}
+		}
+		comment.Likenum = likeNum
+
+		t = tx.Model(&Comments{}).Where("cid = ?",cid).Update("likenum",likeNum)
+		if t.Error != nil {
+			return t.Error
+		}
+		return nil
+	})
+
 	return nil,&comment
 }

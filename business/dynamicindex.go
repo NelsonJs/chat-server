@@ -12,7 +12,8 @@ import (
 
 
 func NearDynamicList(c *gin.Context) {
-	data,err := businessdb.GetDynamics()
+	uid := c.Query("uid")
+	data,err := businessdb.GetDynamics(uid)
 	if err == nil {
 		c.JSON(http.StatusOK,gin.H{
 			"code":1,
@@ -124,7 +125,14 @@ func LikeComment(c *gin.Context) {
 		})
 		return
 	}
-	err,co := businessdb.LikeComment(comment.Cid)
+	if comment.Uid == "" {
+		c.JSON(http.StatusOK,gin.H{
+			"code":-1,
+			"msg":"uid为空",
+		})
+		return
+	}
+	err,co := businessdb.LikeComment(comment.Uid,comment.Cid)
 	if err != nil {
 		c.JSON(http.StatusOK,gin.H{
 			"code":-1,
@@ -132,7 +140,44 @@ func LikeComment(c *gin.Context) {
 		})
 	} else {
 		c.JSON(http.StatusOK,gin.H{
+			"code":1,
+			"data":co,
+		})
+	}
+}
+
+func LikeDynamic(c *gin.Context) {
+	var dy businessdb.Dynamics
+	if err := c.ShouldBindJSON(&dy); err != nil {
+		c.JSON(http.StatusOK,gin.H{
 			"code":-1,
+			"msg":err.Error(),
+		})
+		return
+	}
+	if dy.Did == "" {
+		c.JSON(http.StatusOK,gin.H{
+			"code":-1,
+			"msg":"did为空",
+		})
+		return
+	}
+	if dy.Uid == "" {
+		c.JSON(http.StatusOK,gin.H{
+			"code":-1,
+			"msg":"uid为空",
+		})
+		return
+	}
+	err,co := businessdb.LikeDynamic(dy.Uid,dy.Did)
+	if err != nil {
+		c.JSON(http.StatusOK,gin.H{
+			"code":-1,
+			"msg":err.Error(),
+		})
+	} else {
+		c.JSON(http.StatusOK,gin.H{
+			"code":1,
 			"data":co,
 		})
 	}
