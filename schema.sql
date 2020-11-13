@@ -81,3 +81,4 @@ create table imgs (
 `id` bigint primary key auto_increment,
 `path` varchar(255) not null
 );
+

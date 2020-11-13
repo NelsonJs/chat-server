@@ -142,6 +142,7 @@ insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg'
 insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg','yrh','哈哈哈','102','MS Tong',1602683688);
 insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg','qreb','不错噢','102','MS Tong',1602683688);
 
+<<<<<<< HEAD
 -- 点赞表
 DROP TABLE IF EXISTS `likes`;
 create table likes(
@@ -156,3 +157,33 @@ create table likes(
 insert into likes(uid,cid, liked, createtime) values (100,'574423fd940a549c1979ec0eee747324',1,1602693688);
 insert into likes(uid,cid, liked, createtime) values (100,'827b1d024b564e5eaaef13856fad195c',1,1602753688);
 insert into likes(uid,cid, liked, createtime) values (100,'87d797d1d28331788019c6668d59ecbe',1,1602883688);
+
+-- 出行表
+DROP TABLE IF EXISTS `travel`;
+create table travel(
+`id` bigint primary key auto_increment,
+`tid` varchar(32) not null,
+`ttype` int default 0 comment '0自驾 1活动',
+`car` varchar(32) default '' comment '如：哈弗F7X 黑色',
+`carnum` int default 0 comment '有几辆车',
+`uid` varchar(32) not null,
+`title` varchar(255) default  '',
+`starttime` int default 0,
+`startloc` varchar(64) default '',
+`endloc` varchar(64) default  '',
+`loclat` float default 0,
+`loclng` float default 0,
+`price` varchar(32) default '' comment '资费',
+`total` int default 0 comment '总计划人数 -1为不限制人数',
+`curnum` int default 0 comment '当前已有人数',
+`description` varchar(255) default '',
+`members` json comment '[{"uid":"1","avatar":""}]',
+`status` int,
+`createtime` int default 0
+);
+insert into travel(tid, ttype, car, carnum, uid, title, starttime, startloc, endloc, loclat, loclng, price, total, curnum, description, members, createtime)
+values ('faeiv',0,'哈弗F7X 黑色',1,'100','本周六去厦门',1602693688,'谢家滩','厦门',0,0,'油费AA',5,2,'每人最好只带宽高不超过60厘米的行李，多了放不下去。',
+'[{"uid":"100","avatar":""},{"uid":"101","avatar":""}]',1602683785);
+insert into travel(tid, ttype, car, carnum, uid, title, starttime, startloc, endloc, loclat, loclng, price, total, curnum, description, members, createtime)
+values ('fafeiv',0,'丰田卡罗拉 白色 5座',1,'102','这个月9号去厦门',1602783488,'谢家滩','厦门',0,0,'油费AA',5,3,'中途会在南昌停一个小时，能接受的来！',
+'[{"uid":"102","avatar":""},{"uid":"101","avatar":""}]',1602783785);

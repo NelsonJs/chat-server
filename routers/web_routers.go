@@ -65,6 +65,11 @@ func ListenRoute() {
 		index.POST("/dynamic/like",business.LikeDynamic)
 	}
 
+	travel := router.Group("/travel")
+	{
+		travel.GET("/list",business.GetTravel)
+	}
+
 	comments := router.Group("/comment")
 	{
 		comments.GET("/list",business.GetComments)
@@ -84,6 +89,12 @@ func ListenRoute() {
 		resource.StaticFS("/image/list", http.Dir("D:/GoWork/active_img"))
 		resource.POST("/image/dynamic/",business.GetUploadDynamicImage)
 	}
+
+	area := router.Group("/area")
+	{
+		area.GET("/list",business.GetAreas)
+	}
+
 	httpPort := config.GetViperString("httpPort")
 	fmt.Println("httpPort:", httpPort)
 	router.GET("/api/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
