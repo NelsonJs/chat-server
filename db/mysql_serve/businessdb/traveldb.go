@@ -17,6 +17,7 @@ type Travel struct {
 	Title string `json:"title"`
 	Starttime int64 `json:"starttime"`
 	Startloc string `json:"startloc"`
+	Driveloc string `json:"driveloc"`
 	Endloc string `json:"endloc"`
 	Loclat float64 `json:"loclat"`
 	Loclng float64 `json:"loclng"`

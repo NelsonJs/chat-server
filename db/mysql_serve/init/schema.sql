@@ -173,6 +173,7 @@ create table travel(
 `endloc` varchar(64) default  '',
 `loclat` float default 0,
 `loclng` float default 0,
+`driveloc` varchar(64) default  '',
 `price` varchar(32) default '' comment '资费',
 `total` int default 0 comment '总计划人数 -1为不限制人数',
 `curnum` int default 0 comment '当前已有人数',
@@ -181,9 +182,12 @@ create table travel(
 `status` int,
 `createtime` int default 0
 );
-insert into travel(tid, ttype, car, carnum, uid, title, starttime, startloc, endloc, loclat, loclng, price, total, curnum, description, members, createtime)
-values ('faeiv',0,'哈弗F7X 黑色',1,'100','本周六去厦门',1602693688,'谢家滩','厦门',0,0,'油费AA',5,2,'每人最好只带宽高不超过60厘米的行李，多了放不下去。',
+insert into travel(tid, ttype, car, carnum, uid, title, starttime, startloc, endloc, loclat, loclng,driveloc, price, total, curnum, description, members, createtime)
+values ('faeiv',0,'哈弗F7X 黑色',1,'100','本周六去厦门',1602693688,'谢家滩','厦门',0,0,'慕丰村','油费AA',5,2,'每人最好只带宽高不超过60厘米的行李，多了放不下去。',
 '[{"uid":"100","avatar":""},{"uid":"101","avatar":""}]',1602683785);
-insert into travel(tid, ttype, car, carnum, uid, title, starttime, startloc, endloc, loclat, loclng, price, total, curnum, description, members, createtime)
-values ('fafeiv',0,'丰田卡罗拉 白色 5座',1,'102','这个月9号去厦门',1602783488,'谢家滩','厦门',0,0,'油费AA',5,3,'中途会在南昌停一个小时，能接受的来！',
+insert into travel(tid, ttype, car, carnum, uid, title, starttime, startloc, endloc, loclat, loclng,driveloc, price, total, curnum, description, members, createtime)
+values ('fafeiv',0,'丰田卡罗拉 白色 5座',1,'102','这个月9号去厦门',1602783488,'谢家滩','厦门',0,0,'谢家滩政府门口','油费AA',5,3,'中途会在南昌停一个小时，能接受的来！',
+'[{"uid":"102","avatar":""},{"uid":"101","avatar":""}]',1602783785);
+insert into travel(tid, ttype, uid, title, starttime, startloc, endloc, loclat, loclng,driveloc, price, total, curnum, description, members, createtime)
+values ('fafeiv',1,'102','水库上聚餐啊大家',1602783488,'亭子下','水库',0,0,'亭子下','免费',15,7,'大家带好装备~~~准备烧烤，鸡鸭鱼免费',
 '[{"uid":"102","avatar":""},{"uid":"101","avatar":""}]',1602783785);
