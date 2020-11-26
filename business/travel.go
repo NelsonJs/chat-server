@@ -20,3 +20,26 @@ func GetTravel(c *gin.Context) {
 		"data":data,
 	})
 }
+
+func PublishTravel(c *gin.Context) {
+	var travel businessdb.Travel
+	if err := c.ShouldBindJSON(&travel);err != nil {
+		c.JSON(http.StatusOK,gin.H{
+			"code":-1,
+			"msg":err.Error(),
+		})
+		return
+	}
+	err := businessdb.PublishTravel(&travel)
+	if err != nil {
+		c.JSON(http.StatusOK,gin.H{
+			"code":-1,
+			"msg":err.Error(),
+		})
+	} else {
+		c.JSON(http.StatusOK,gin.H{
+			"code":1,
+			"msg":"创建成功",
+		})
+	}
+}

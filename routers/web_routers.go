@@ -68,6 +68,7 @@ func ListenRoute() {
 	travel := router.Group("/travel")
 	{
 		travel.GET("/list",business.GetTravel)
+		travel.POST("/publish",business.PublishTravel)
 	}
 
 	comments := router.Group("/comment")

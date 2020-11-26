@@ -2,9 +2,11 @@ package businessdb
 
 import (
 	"chat/db/mysql_serve"
+	"chat/utils"
 	"encoding/json"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Travel struct {
@@ -35,6 +37,14 @@ type TravelOut struct {
 	EndPlace string `json:"end_place"`
 	TravelType string `json:"travel_type"`
 	Travels []*Travel `json:"travels"`
+}
+
+func PublishTravel(travel *Travel) error {
+	tid := utils.Md5WithTime(travel.Title)
+	travel.Tid = tid
+	travel.Createtime = time.Now().Unix()
+	tx := mysql_serve.Db.Create(&travel)
+	return tx.Error
 }
 
 func GetTravelList() (error,[]*TravelOut) {
@@ -71,3 +81,5 @@ func GetTravelList() (error,[]*TravelOut) {
 	}
 	return tx.Error,outTravels
 }
+
+
