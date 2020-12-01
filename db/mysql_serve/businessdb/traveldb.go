@@ -4,7 +4,6 @@ import (
 	"chat/db/mysql_serve"
 	"chat/utils"
 	"encoding/json"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -12,8 +11,9 @@ import (
 type Travel struct {
 	Id int64 `json:"-"`
 	Tid string `json:"tid"`
-	Ttype int `json:"ttype"`
+	Ttype string `json:"ttype"` //出行 活动
 	Car string `json:"car"`
+	Cartype string `json:"cartype"`
 	Carnum int `json:"carnum"'`
 	Uid string `json:"uid"`
 	Title string `json:"title"`
@@ -55,7 +55,7 @@ func GetTravelList() (error,[]*TravelOut) {
 		sameTravel := make(map[string][]*Travel,0)
 		for _,v := range travels {
 			var buf strings.Builder
-			buf.WriteString(strconv.Itoa(v.Ttype))
+			buf.WriteString(v.Ttype)
 			buf.WriteString(v.Startloc)
 			buf.WriteString(v.Endloc)
 			if _, ok := sameTravel[buf.String()];ok {
@@ -70,11 +70,7 @@ func GetTravelList() (error,[]*TravelOut) {
 			var t TravelOut
 			t.StartPlace = v[0].Startloc
 			t.EndPlace =v[0].Endloc
-			if v[0].Ttype == 0 {
-				t.TravelType = "自驾"
-			} else if v[0].Ttype == 1 {
-				t.TravelType = "活动"
-			}
+			t.TravelType = v[0].Ttype
 			t.Travels = v
 			outTravels = append(outTravels,&t)
 		}

@@ -163,7 +163,8 @@ DROP TABLE IF EXISTS `travel`;
 create table travel(
 `id` bigint primary key auto_increment,
 `tid` varchar(32) not null,
-`ttype` int default 0 comment '0自驾 1活动',
+`ttype` varchar(32) default '' comment '出行 活动',
+`cartype` varchar(32) default '' comment '如：自驾，动车，飞机',
 `car` varchar(32) default '' comment '如：哈弗F7X 黑色',
 `carnum` int default 0 comment '有几辆车',
 `uid` varchar(32) not null,
@@ -183,11 +184,11 @@ create table travel(
 `createtime` int default 0
 );
 insert into travel(tid, ttype, car, carnum, uid, title, starttime, startloc, endloc, loclat, loclng,driveloc, price, total, curnum, description, members, createtime)
-values ('faeiv',0,'哈弗F7X 黑色',1,'100','本周六去厦门',1602693688,'谢家滩','厦门',0,0,'慕丰村','油费AA',5,2,'每人最好只带宽高不超过60厘米的行李，多了放不下去。',
+values ('faeiv','出行','哈弗F7X 黑色',1,'100','本周六去厦门',1602693688,'谢家滩','厦门',0,0,'慕丰村','油费AA',5,2,'每人最好只带宽高不超过60厘米的行李，多了放不下去。',
 '[{"uid":"100","avatar":""},{"uid":"101","avatar":""}]',1602683785);
 insert into travel(tid, ttype, car, carnum, uid, title, starttime, startloc, endloc, loclat, loclng,driveloc, price, total, curnum, description, members, createtime)
-values ('fafeiv',0,'丰田卡罗拉 白色 5座',1,'102','这个月9号去厦门',1602783488,'谢家滩','厦门',0,0,'谢家滩政府门口','油费AA',5,3,'中途会在南昌停一个小时，能接受的来！',
+values ('fafeiv','出行','丰田卡罗拉 白色 5座',1,'102','这个月9号去厦门',1602783488,'谢家滩','厦门',0,0,'谢家滩政府门口','油费AA',5,3,'中途会在南昌停一个小时，能接受的来！',
 '[{"uid":"102","avatar":""},{"uid":"101","avatar":""}]',1602783785);
 insert into travel(tid, ttype, uid, title, starttime, startloc, endloc, loclat, loclng,driveloc, price, total, curnum, description, members, createtime)
-values ('fafeiv',1,'102','水库上聚餐啊大家',1602783488,'亭子下','水库',0,0,'亭子下','免费',15,7,'大家带好装备~~~准备烧烤，鸡鸭鱼免费',
+values ('fafeiv','活动','102','水库上聚餐啊大家',1602783488,'亭子下','水库',0,0,'亭子下','免费',15,7,'大家带好装备~~~准备烧烤，鸡鸭鱼免费',
 '[{"uid":"102","avatar":""},{"uid":"101","avatar":""}]',1602783785);
