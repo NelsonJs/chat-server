@@ -73,6 +73,12 @@ func ListenRoute() {
 		travel.POST("/exit",business.ExitTravel)
 	}
 
+	love := router.Group("/love")
+	{
+		love.GET("/list",business.GetLoveAll)
+		love.PUT("/publish",business.PublishLove)
+	}
+
 	comments := router.Group("/comment")
 	{
 		comments.GET("/list",business.GetComments)
@@ -89,7 +95,8 @@ func ListenRoute() {
 	{
 
 		//resource.StaticFS("/upload", http.Dir("/dist/images"))
-		resource.StaticFS("/image/list", http.Dir("D:/GoWork/active_img"))
+		imagePath := config.GetViperString("imageSavePath")
+		resource.StaticFS("/image/list", http.Dir(imagePath))
 		resource.POST("/image/dynamic/",business.GetUploadDynamicImage)
 	}
 

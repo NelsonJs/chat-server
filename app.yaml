@@ -1,8 +1,8 @@
-logFile: /dist/log/gin.log
-mysqlLog: /dist/log/mysql.log
-httpPort: 8080
+logFile: /data/mywork/app/hometown/log/gin.log
+mysqlLog: /data/mywork/app/hometown/log/mysql.log
+httpPort: 80
 webSocketPort: 6767
-httpUrl: 127.0.0.1:8080
-webSocketUrl: 127.0.0.1:7979
-imagePathIp: 192.168.0.106
-imageSavePath: D:/GoWork/active_img/
+httpUrl: 9394.cool:80
+webSocketUrl: 9394.cool:6379
+imagePathIp: 9394.cool
+imageSavePath: /data/mywork/app/hometown/images/

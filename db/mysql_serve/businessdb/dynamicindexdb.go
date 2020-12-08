@@ -12,6 +12,24 @@ import (
 	"time"
 )
 
+type DynamicsQuery struct {
+	Id int64 `json:"-"`
+	Did string `json:"did"`
+	Uid string `json:"uid"`
+	Nickname string `json:"nickname"`
+	Title string `json:"title"`
+	Avatar string `json:"avatar"`
+	Gender int `json:"gender"`
+	Likenum int64 `json:"likeNum"`
+	Liked bool `json:"liked"`
+	Location string `json:"location"`
+	Lat float64 `json:"lat"`
+	Lng float64 `json:"lng"`
+	Createtime int64 `json:"createTime"`
+	Resimg JSON `json:"resImg"`
+	Description string `json:"desc"`
+}
+
 type Dynamics struct {
 	Id int64 `json:"-"`
 	Did string `json:"did"`
@@ -70,8 +88,8 @@ func Struct2Map(obj interface{}) map[string]interface{} {
 
 
 func GetDynamics(uid string) ([]*map[string]interface{},error){
-	var data []Dynamics
-	tx := mysql_serve.Db.Order("createtime desc").Find(&data)
+	var data []DynamicsQuery
+	tx := mysql_serve.Db.Table("dynamics").Order("createtime desc").Find(&data)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
@@ -87,9 +105,14 @@ func GetDynamics(uid string) ([]*map[string]interface{},error){
 				}
 			}
 			err,comments := GetComments(v.Did)
-			if err != nil {
-				fmt.Println(err.Error())
-				config.Log.Error(err.Error())
+			if err != nil{
+				if err == gorm.ErrRecordNotFound {
+					m := Struct2Map(v)
+					list = append(list, &m)
+				} else {
+					fmt.Println(err.Error())
+					config.Log.Error(err.Error())
+				}
 			} else {
 				m := Struct2Map(v)
 				m["comments"] = comments

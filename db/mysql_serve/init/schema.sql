@@ -1,6 +1,6 @@
-create database `demo` default character set utf8mb4 collate utf8mb4_unicode_ci;
+create database `hometown` default character set utf8mb4 collate utf8mb4_unicode_ci;
 
-use demo;
+use hometown;
 
 -- 消息表
 DROP TABLE IF EXISTS `msg`;
@@ -142,7 +142,6 @@ insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg'
 insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg','yrh','哈哈哈','102','MS Tong',1602683688);
 insert into comments(did, cid,content, uid, nickname,createtime) values ('asdfg','qreb','不错噢','102','MS Tong',1602683688);
 
-<<<<<<< HEAD
 -- 点赞表
 DROP TABLE IF EXISTS `likes`;
 create table likes(
@@ -192,3 +191,25 @@ values ('fafeiv','出行','丰田卡罗拉 白色 5座',1,'102','这个月9号�
 insert into travel(tid, ttype, uid, title, starttime, startloc, endloc, loclat, loclng,driveloc, price, total, curnum, description, members, createtime)
 values ('fafeiv','活动','102','水库上聚餐啊大家',1602783488,'亭子下','水库',0,0,'亭子下','免费',15,7,'大家带好装备~~~准备烧烤，鸡鸭鱼免费',
 '[{"uid":"102","avatar":""},{"uid":"101","avatar":""}]',1602783785);
+
+-- 相亲表
+DROP TABLE IF EXISTS `love`;
+create table love(
+ `id` bigint primary key auto_increment,
+ `uid` varchar(32) not null,
+ `img` varchar(255) default '',
+ `title` varchar(32) default '',
+ `name` varchar(32) default '',
+ `gender` int default 0,
+ `likenum` int default 0,
+ `status` int default 0,
+ `createtime` int default 0
+);
+insert into love(uid, img, title, name, gender, likenum, createtime)
+values ('101','','让我们相约邂逅','王美丽',1,39,1602793385);
+insert into love(uid, img, title, name, gender, likenum, createtime)
+values ('100','','爸妈催的急，约的来！','彭小彩',1,48,1602623385);
+insert into love(uid, img, title, name, gender, likenum, createtime)
+values ('102','','今年过年想脱单，有一起的吗','陈一倩',1,23,1602291385);
+insert into love(uid, img, title, name, gender, likenum, createtime)
+values ('103','','爱上你没道理！','余乐乐',1,95,1602787385);

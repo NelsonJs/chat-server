@@ -12,7 +12,7 @@ var (
 )
 
 func init() {
-	dsn := "root:123456@tcp(localhost:3310)/demo?charset=utf8mb4"
+	dsn := "root:6678510Jk.@tcp(localhost:3306)/hometown?charset=utf8mb4"
 	Db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{SingularTable: true},
 	})

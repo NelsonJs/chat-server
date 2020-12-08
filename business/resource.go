@@ -2,8 +2,10 @@ package business
 
 import (
 	"chat/config"
+	"chat/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strings"
 )
 
 func GetUploadDynamicImage(c *gin.Context) {
@@ -21,8 +23,12 @@ func GetUploadDynamicImage(c *gin.Context) {
 		iPath := config.GetViperString("imagePathIp")
 		httpPort := config.GetViperString("httpPort")
 		imageSavePath := config.GetViperString("imageSavePath")
-		var url = "http://"+iPath+":"+httpPort+"/resource/image/list/"+file.Filename
-		err := c.SaveUploadedFile(file,imageSavePath+file.Filename)
+		filename := utils.Md5WithTime(file.Filename)
+		var sb strings.Builder
+		sb.WriteString(filename)
+		sb.WriteString(file.Filename)
+		var url = "http://"+iPath+":"+httpPort+"/resource/image/list/"+sb.String()
+		err := c.SaveUploadedFile(file,imageSavePath+sb.String())
 		if err != nil{
 			c.JSON(http.StatusOK,gin.H{
 				"code":-1,
