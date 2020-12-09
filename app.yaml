@@ -6,3 +6,4 @@ httpUrl: 9394.cool:80
 webSocketUrl: 9394.cool:6379
 imagePathIp: 9394.cool
 imageSavePath: /data/mywork/app/hometown/images/
+appSavePath: /data/mywork/app/hometown/apk/

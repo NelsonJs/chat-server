@@ -213,3 +213,13 @@ insert into love(uid, img, title, name, gender, likenum, createtime)
 values ('102','','今年过年想脱单，有一起的吗','陈一倩',1,23,1602291385);
 insert into love(uid, img, title, name, gender, likenum, createtime)
 values ('103','','爱上你没道理！','余乐乐',1,95,1602787385);
+
+DROP TABLE IF EXISTS `versions`;
+create table versions(
+ `id` bigint primary key auto_increment,
+ `name` varchar(255) default '',
+ `num` int default 0,
+ `description` varchar(255) default '',
+ `channel` varchar(30) default '' comment 'android ios',
+ `createtime` int default 0
+);

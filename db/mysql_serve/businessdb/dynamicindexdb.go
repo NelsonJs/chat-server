@@ -39,7 +39,6 @@ type Dynamics struct {
 	Avatar string `json:"avatar"`
 	Gender int `json:"gender"`
 	Likenum int64 `json:"likeNum"`
-	Liked bool `json:"liked"`
 	Location string `json:"location"`
 	Lat float64 `json:"lat"`
 	Lng float64 `json:"lng"`
@@ -210,8 +209,8 @@ type Likes struct {
 	Createtime int64 `json:"createtime"`
 }
 
-func LikeDynamic(uid, did string) (error,*Dynamics) {
-	var dy Dynamics
+func LikeDynamic(uid, did string) (error,*DynamicsQuery) {
+	var dy DynamicsQuery
 	mysql_serve.Db.Transaction(func(tx *gorm.DB) error {
 		var like Likes
 		t := tx.Where("uid = ? and did = ?",uid,did).First(&like)

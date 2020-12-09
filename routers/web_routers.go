@@ -93,11 +93,14 @@ func ListenRoute() {
 
 	resource := router.Group("/resource")
 	{
-
 		//resource.StaticFS("/upload", http.Dir("/dist/images"))
 		imagePath := config.GetViperString("imageSavePath")
 		resource.StaticFS("/image/list", http.Dir(imagePath))
+		appPath := config.GetViperString("appSavePath")
+		resource.StaticFS("/app", http.Dir(appPath))
 		resource.POST("/image/dynamic/",business.GetUploadDynamicImage)
+		resource.POST("/app/upload",business.UpdateApp)
+		resource.GET("/app/newapp",business.GetNewApp)
 	}
 
 	area := router.Group("/area")
