@@ -84,7 +84,7 @@ func GetComments(c *gin.Context) {
 }
 
 func InsertComment(c *gin.Context) {
-	var comment businessdb.Comments
+	var comment businessdb.CommentsCreate
 	if err := c.ShouldBindJSON(&comment); err != nil {
 		c.JSON(http.StatusOK,gin.H{
 			"code":-1,

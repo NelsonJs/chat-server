@@ -129,6 +129,22 @@ func InsertDynamic(dy *Dynamics) error {
 
 
 //comments
+type CommentsCreate struct {
+	Id int64 `json:"-"`
+	Did string `json:"dId"`
+	Cid string `json:"cid"`
+	Fid string `json:"fid"`
+	Pid string `json:"pid"`
+	Content string `json:"content"`
+	Uid string `json:"uid"`
+	Nickname string `json:"nickname"`
+	Replyuid string `json:"replyuid"`
+	Replyname string `json:"replyname"`
+	Likenum int64 `json:"likenum"`
+	Status int `json:"status"`
+	Createtime int64 `json:"createTime"`
+}
+
 type Comments struct {
 	Id int64 `json:"-"`
 	Did string `json:"dId"`
@@ -152,7 +168,7 @@ type CommentList struct {
 }
 
 
-func InsertComments(c *Comments) error {
+func InsertComments(c *CommentsCreate) error {
 	tx := mysql_serve.Db.Create(c)
 	return tx.Error
 }

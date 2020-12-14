@@ -1,6 +1,7 @@
 package mysql_serve
 
 import (
+	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -12,7 +13,10 @@ var (
 )
 
 func init() {
-	dsn := "root:6678510Jk.@tcp(localhost:3306)/hometown?charset=utf8mb4"
+	port := viper.GetString("mysqlPort")
+	pwd := viper.GetString("mysqlPwd")
+	dbName := viper.GetString("mysqlDb")
+	dsn := "root:"+pwd+"@tcp(localhost:"+port+")/"+dbName+"?charset=utf8mb4"
 	Db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{SingularTable: true},
 	})

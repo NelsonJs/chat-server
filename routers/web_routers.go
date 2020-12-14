@@ -97,7 +97,7 @@ func ListenRoute() {
 		imagePath := config.GetViperString("imageSavePath")
 		resource.StaticFS("/image/list", http.Dir(imagePath))
 		appPath := config.GetViperString("appSavePath")
-		resource.StaticFS("/app", http.Dir(appPath))
+		resource.StaticFS("/apks", http.Dir(appPath))
 		resource.POST("/image/dynamic/",business.GetUploadDynamicImage)
 		resource.POST("/app/upload",business.UpdateApp)
 		resource.GET("/app/newapp",business.GetNewApp)
