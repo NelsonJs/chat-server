@@ -7,6 +7,7 @@
 [GIN-debug] POST   /user/register            --> chat/business.Register (3 handlers)
 [GIN-debug] POST   /user/login               --> chat/business.Login (3 handlers)
 [GIN-debug] GET    /conversation/list        --> chat/routers.ConversationList (3 handlers)
+[GIN-debug] POST   /conversation/addconversation --> chat/routers.AddConversation (3 handlers)
 [GIN-debug] GET    /conversation/record      --> chat/routers.ChatRecords (3 handlers)
 [GIN-debug] POST   /conversation/delete      --> chat/routers.DelConversation (3 handlers)
 [GIN-debug] POST   /conversation/revokeMsg   --> chat/routers.RevokeMsg (3 handlers)
@@ -43,3 +44,4 @@
 [GIN-debug] GET    /area/list                --> chat/business.GetAreas (3 handlers)
 [GIN-debug] GET    /api/*any                 --> github.com/swaggo/gin-swagger.CustomWrapHandler.func1 (3 handlers)
 [GIN-debug] Listening and serving HTTP on :8080
+[GIN] 2020/12/17 - 16:50:42 | 200 |    360.9999ms |             ::1 | POST     "/conversation/addconversation"

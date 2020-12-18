@@ -25,6 +25,9 @@ func ConversationList(c *gin.Context) {
 	})
 }
 
+
+
+
 //获取聊天记录
 func ChatRecords(c *gin.Context) {
 	uid := c.Query("uid")

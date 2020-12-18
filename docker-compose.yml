@@ -5,6 +5,7 @@ services:
     links:
       - db
       - redis
+      - mongo
     ports:
       - "8080:8080"
       - "7979:7979"
@@ -34,6 +35,12 @@ services:
     container_name: tredis
     command:
       redis-server
-    restart: on-failure
+    restart: always
+ mongo:
+    image: mongo:4.4.2
+    ports:
+    - "27017:27017"
+    container_name: mongodb
+    restart: always
 
   
