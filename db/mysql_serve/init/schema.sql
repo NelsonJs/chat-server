@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS `msg`;
 create table msg(
 `id` bigint primary key auto_increment,
 `uid` varchar(32) not null,
+`msgid` varchar(32) default '',
 `nickname` varchar(24) default '',
 `peerid` varchar(32) not null,
 `ctype` varchar(32) default '' comment '1',
@@ -19,6 +20,22 @@ create table msg(
 insert into msg(uid, nickname,peerid, ctype, msg_type, content, status, create_time)values('100','Mr Peng','101',1,1,'the weather is very good today!',1,1602726388);
 insert into msg(uid, nickname,peerid, ctype, msg_type, content, status, create_time)values('100','Ms Wang','102',1,1,'it is very funny!',1,1602726388);
 insert into msg(uid, nickname,peerid, ctype, msg_type, content, status, create_time)values('100','测试群','103',2,1,'do you want fishing?',1,1602726388);
+
+-- 离线消息表
+DROP TABLE IF EXISTS `msg`;
+create table offmsg(
+`id` bigint primary key auto_increment,
+`msgid` varchar(32) default '',
+`uid` varchar(32) not null,
+`nickname` varchar(24) default '',
+`peerid` varchar(32) not null,
+`ctype` varchar(32) default '' comment '1',
+`msg_type` int default 0,
+`content` varchar(255) default '',
+`pic` varchar(255),
+`status` int default 0,
+`create_time` bigint default 0
+);
 
 -- 注册用户表
 DROP TABLE IF EXISTS `user`;

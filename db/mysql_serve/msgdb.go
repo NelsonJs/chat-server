@@ -6,7 +6,7 @@ import (
 )
 
 type Msg struct {
-	MsgId       string `json:"msg_id"`
+	Msgid       string `json:"msgid"`
 	Uid         string `json:"uid"`
 	Nickname string `json:"nickname"`
 	Peerid      string `json:"peerid"`
@@ -16,6 +16,29 @@ type Msg struct {
 	Pic         string
 	Status      int
 	Create_time int64
+}
+
+//离线消息存储
+type Offmsg struct {
+	Msgid       string `json:"msgid"`
+	Uid         string `json:"uid"`
+	Nickname string `json:"nickname"`
+	Peerid      string `json:"peerid"`
+	Ctype       string `json:"ctype"`
+	Content     string `json:"content"`
+	Msg_type    int    `json:"msg_type"`
+	Pic         string
+	Status      int
+	Create_time int64
+}
+
+func InsertOffMsg(msg *Offmsg) (bool, error) {
+	tx := Db.Create(msg)
+	if tx.Error != nil {
+		config.Log.Error(tx.Error.Error())
+		return false, tx.Error
+	}
+	return true, nil
 }
 
 func InsertMsg(msg *Msg) (bool, error) {

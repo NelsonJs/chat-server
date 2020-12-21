@@ -55,3 +55,18 @@ func LoginToDb(user *User) (error,*User) {
 	tx = Db.Model(user).Where("phone = ?",user.Phone).Update("login_time",user.Login_time)
 	return tx.Error,&u
 }
+
+func UserIsExists(uid string) bool {
+	if uid == ""{
+		return false
+	}
+	var u User
+	tx := Db.Where("uid = ?",uid).First(&u)
+	if tx.Error != nil {
+		return false
+	}
+	if u.Uid != "" {
+		return true
+	}
+	return false
+}

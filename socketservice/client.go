@@ -21,10 +21,15 @@ type Client struct {
 type ResponseMsg struct {
 	Code int
 	Content string
+	MsgType int
 }
 
 func GenerateMsg(code int,content string) *ResponseMsg {
 	return &ResponseMsg{Code: code,Content: content}
+}
+
+func GenerateNoticeMsg(code,msgType int,content string) *ResponseMsg {
+	return &ResponseMsg{Code: code,MsgType: msgType,Content: content}
 }
 
 func NewClient(conn *websocket.Conn)  {
