@@ -15,9 +15,9 @@ logFile: D:\GoWork\chat\gin.log
 #mysqlLog: /data/mywork/app/hometown/log/mysql.log
 httpPort: 8080
 webSocketPort: 7979
-httpUrl: 192.168.1.5:8080
-webSocketUrl: 192.168.1.5:7979
-imagePathIp: 192.168.1.5
+httpUrl: 192.168.1.2:8080
+webSocketUrl: 192.168.1.2:7979
+imagePathIp: 192.168.1.2
 imageSavePath: D:\GoWork\active_img\
 mysqlPort: 3310
 mysqlPwd: 123456

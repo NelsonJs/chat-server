@@ -86,9 +86,14 @@ func Struct2Map(obj interface{}) map[string]interface{} {
 }
 
 
-func GetDynamics(uid string) ([]*map[string]interface{},error){
+func GetDynamics(uid string,time int64,limit int) ([]*map[string]interface{},error){
 	var data []DynamicsQuery
-	tx := mysql_serve.Db.Table("dynamics").Order("createtime desc").Find(&data)
+	queryS := "createtime < ?"
+	if time == 0 {
+		queryS = "createtime > ?"
+	}
+	tx := mysql_serve.Db.Table("dynamics").Where(queryS,time).
+		Order("createtime desc").Limit(limit).Find(&data)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -13,7 +14,11 @@ import (
 
 func NearDynamicList(c *gin.Context) {
 	uid := c.Query("uid")
-	data,err := businessdb.GetDynamics(uid)
+	time := c.DefaultQuery("offsetTime","0")
+	limit := c.DefaultQuery("limit","0")
+	offsetTime,_ := strconv.ParseInt(time,10,64)
+	limitInt,_ := strconv.Atoi(limit)
+	data,err := businessdb.GetDynamics(uid,offsetTime,limitInt)
 	if err == nil {
 		c.JSON(http.StatusOK,gin.H{
 			"code":1,
