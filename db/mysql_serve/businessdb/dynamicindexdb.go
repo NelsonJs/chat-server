@@ -97,9 +97,16 @@ func GetDynamics(uid string,time int64,limit int) ([]*map[string]interface{},err
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
+	if data != nil && len(data) > 0{
+		for i := 0; i < len(data); i++ {
+			u := mysql_serve.QueryUser(data[i].Uid)
+			if u != nil {
+
+			}
+		}
+	}
 	list := make([]*map[string]interface{},0)
 	if data != nil && len(data) > 0 {
-		fmt.Println(len(data))
 		for _,v := range data {
 			if uid != "" {
 				var like Likes
@@ -108,10 +115,14 @@ func GetDynamics(uid string,time int64,limit int) ([]*map[string]interface{},err
 					v.Liked = true
 				}
 			}
+			u := mysql_serve.QueryUser(v.Uid)
 			err,comments := GetComments(v.Did)
 			if err != nil{
 				if err == gorm.ErrRecordNotFound {
 					m := Struct2Map(v)
+					if u != nil {
+						m["Nickname"] = u.Nickname
+					}
 					list = append(list, &m)
 				} else {
 					fmt.Println(err.Error())
@@ -119,6 +130,9 @@ func GetDynamics(uid string,time int64,limit int) ([]*map[string]interface{},err
 				}
 			} else {
 				m := Struct2Map(v)
+				if u != nil {
+					m["Nickname"] = u.Nickname
+				}
 				m["comments"] = comments
 				list = append(list, &m)
 			}

@@ -103,29 +103,24 @@ func UpdateApp(c *gin.Context) {
 }
 
 func GetNewApp(c *gin.Context) {
-	var apk businessdb.Apk
-	if err := c.ShouldBindJSON(&apk); err != nil {
-		c.JSON(http.StatusOK,gin.H{
-			"code":-1,
-			"msg":err.Error(),
-		})
-		return
-	}
-	if apk.Channel != "android" || apk.Channel != "ios" {
+	channel := c.DefaultQuery("channel","")
+	version := c.DefaultQuery("version","0")
+	if channel != "android" && channel != "ios" {
 		c.JSON(http.StatusOK,gin.H{
 			"code":-1,
 			"msg":"仅支持安卓跟苹果系统！",
 		})
 		return
 	}
-	if apk.Num <= 0 {
+	_version,_ := strconv.Atoi(version)
+	if _version <= 0 {
 		c.JSON(http.StatusOK,gin.H{
 			"code":-1,
 			"msg":"请设置正确的版本号！",
 		})
 		return
 	}
-	err,apkData := businessdb.GetApk(apk.Channel,apk.Num)
+	err,apkData := businessdb.GetApk(channel,_version)
 	if err != nil {
 		c.JSON(http.StatusOK,gin.H{
 			"code":-1,
