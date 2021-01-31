@@ -30,6 +30,13 @@ func ListenRoute() {
 	initFile()
 	router := gin.Default()
 
+	test := router.Group("/test")
+	{
+		test.POST("/login",business.Test1)
+		test.POST("/file",business.TestFile)
+	}
+
+
 	user := router.Group("/user")
 	{
 		user.POST("/register",business.Register)
