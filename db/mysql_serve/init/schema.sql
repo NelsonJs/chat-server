@@ -234,7 +234,7 @@ values ('103','','爱上你没道理！','余乐乐',1,95,1602787385);
 DROP TABLE IF EXISTS `versions`;
 create table versions(
  `id` bigint primary key auto_increment,
- `name` varchar(255) default '',
+ `url` varchar(255) default '',
  `num` int default 0,
  `description` varchar(255) default '',
  `channel` varchar(30) default '' comment 'android ios',
