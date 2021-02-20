@@ -13,6 +13,7 @@ import (
 )
 var db *sql.DB
 var err error
+var preApkUrl = "http://www.9394.cool:5885/api/file/apks/"
 func main() {
 	db,err = sql.Open("mysql","root:6678510Jk.@tcp(localhost:3306)/hometown")
 	if err != nil {
@@ -20,21 +21,45 @@ func main() {
 	}
 	defer db.Close()
 
-	router := gin.Default()
-	router.StaticFile("/apk/android.apk", "/data/mywork/apks/android.apk")
-	router.POST("/upload/apk",upload)
-	router.GET("/apks",apks)
-	router.GET("/apk/query",get)
-	router.GET("/status", func(context *gin.Context) {
+	router := gin.New()
+	router.Use(checkUrl())
+	router.Use(htmlView())
+	router.StaticFS("/api/file/apks",http.Dir("/data/mywork/apks/"))
+	router.POST("/api/upload/apk",upload)
+	router.GET("/api/apks",apks)
+	router.GET("/api/apk/query",get)
+	router.GET("/api/status", func(context *gin.Context) {
 		context.JSON(http.StatusOK,gin.H{"msg":"apk存储服务器已在线！"})
 	})
 	router.Run(":5885")
 }
 
+func checkUrl() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		fmt.Println(c.Request.URL.Path)
+		if "/api/file/apks/" == c.Request.URL.Path {
+			c.Status(http.StatusForbidden)
+			c.Abort()
+			return
+		}
+		c.Next()
+	}
+}
+
+func htmlView() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		path := c.Request.URL.Path
+		if !strings.Contains(path,"api") {
+			http.ServeFile(c.Writer,c.Request,"views"+c.Request.URL.Path)
+		}
+		c.Next()
+	}
+}
+
 type Version struct {
 	Id int64 `json:"-"`
 	Url string `json:"-"`
-	Num int32 `json:"num"`
+	Num int64 `json:"num"`
 	Description string `json:"description"`
 	Channel string `json:"channel"`
 	Createtime int64 `json:"createtime"`
@@ -55,15 +80,18 @@ func get(ctx *gin.Context) {
 				"msg":err.Error(),
 			})
 		} else {
-			row := db.QueryRow("select * from versions where num = ?  order by desc",v)
+			row := db.QueryRow("select * from versions where num = ?  order by createtime desc",v)
 			v := Version{}
-			err = row.Scan(&v.Id,&v.Url,&v.Description,&v.Channel,&v.Num,&v.Createtime)
-			if err != nil && err != gorm.ErrRecordNotFound{
+			err = row.Scan(&v.Id,&v.Url,&v.Num,&v.Description,&v.Channel,&v.Createtime)
+			if err != nil {
+				if err == gorm.ErrRecordNotFound {
+					ctx.JSON(http.StatusOK,gin.H{"code":-1,"msg":"没有新版本"})
+					return
+				}
 				ctx.JSON(http.StatusOK,gin.H{"code":-1,"msg":err.Error()})
 				return
-			} else {
-				ctx.JSON(http.StatusOK,gin.H{"code":-1,"msg":"没有新版本"})
 			}
+			v.Url += preApkUrl
 			ctx.JSON(http.StatusOK,gin.H{
 				"code":1,
 				"data":v,
@@ -82,13 +110,13 @@ func apks(ctx *gin.Context) {
 			ctx.JSON(http.StatusOK,gin.H{"code":-1,"msg":err.Error()})
 			return
 		}
-		rows,err = db.Query("select * from versions where createtime < ? limit 10 order by desc",t)
+		rows,err = db.Query("select * from versions where createtime < ? order by createtime desc limit 10",t)
 		if err != nil {
 			ctx.JSON(http.StatusOK,gin.H{"code":-1,"msg":err.Error()})
 			return
 		}
 	} else {
-		rows,err = db.Query("select * from versions limit 10 order by desc")
+		rows,err = db.Query("select * from versions order by createtime desc limit 10")
 		if err != nil {
 			ctx.JSON(http.StatusOK,gin.H{"code":-1,"msg":err.Error()})
 			return
@@ -98,10 +126,11 @@ func apks(ctx *gin.Context) {
 	data := make([]*Version,0)
 	for rows.Next() {
 		v := Version{}
-		err := rows.Scan(&v.Id,&v.Url,&v.Description,&v.Channel,&v.Num,&v.Createtime)
+		err := rows.Scan(&v.Id,&v.Url,&v.Num,&v.Description,&v.Channel,&v.Createtime)
 		if err != nil {
 			break
 		}
+		v.Url += preApkUrl
 		data = append(data,&v)
 	}
 	ctx.JSON(http.StatusOK,gin.H{"code":1,"data":data})
@@ -136,7 +165,8 @@ func upload(ctx *gin.Context) {
 		return
 	}
 	var sb strings.Builder
-	sb.WriteString("android.")
+	sb.WriteString(time.Now().Format("2006-01-02 15:03"))
+	sb.WriteString(".")
 	sb.WriteString(ary[1])
 	err = ctx.SaveUploadedFile(header,"/data/mywork/apks/"+sb.String())
 	if err != nil {
@@ -150,13 +180,8 @@ func upload(ctx *gin.Context) {
 	if num != "" {
 		n,_ = strconv.Atoi(num)
 	}
-	var url string
-	if channel == "android"{
-		url = "http://www.9394,cool:5885/apk/android.apk"
-	} else if channel == "ios" {
-
-	}
-	result,err := db.Exec("insert into versions(url,description,channel,num,createtime)values(?,?,?,?,?)",url,desc,channel,n,time.Now().Unix())
+	name := sb.String()
+	result,err := db.Exec("insert into versions(url,description,channel,num,createtime)values(?,?,?,?,?)",name,desc,channel,n,time.Now().Unix())
 	affected,_ := result.RowsAffected()
 	if affected > 0{
 		ctx.JSON(http.StatusOK,gin.H{"msg":"上传成功！"})
