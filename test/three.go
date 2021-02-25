@@ -58,7 +58,7 @@ func htmlView() gin.HandlerFunc {
 
 type Version struct {
 	Id int64 `json:"-"`
-	Url string `json:"-"`
+	Url string `json:"url"`
 	Num int64 `json:"num"`
 	Description string `json:"description"`
 	Channel string `json:"channel"`
@@ -67,6 +67,14 @@ type Version struct {
 
 func get(ctx *gin.Context) {
 	version := ctx.DefaultQuery("version","")
+	channel := ctx.DefaultQuery("channel","")
+	if channel == "" || (channel != "android" && channel != "ios"){
+		ctx.JSON(http.StatusOK,gin.H{
+			"code":-1,
+			"msg":"请选择app平台",
+		})
+		return
+	}
 	if version == "" {
 		ctx.JSON(http.StatusOK,gin.H{
 			"code":-1,
@@ -80,7 +88,7 @@ func get(ctx *gin.Context) {
 				"msg":err.Error(),
 			})
 		} else {
-			row := db.QueryRow("select * from versions where num = ?  order by createtime desc",v)
+			row := db.QueryRow("select * from versions where num = ? and channel = ? order by createtime desc",v,channel)
 			v := Version{}
 			err = row.Scan(&v.Id,&v.Url,&v.Num,&v.Description,&v.Channel,&v.Createtime)
 			if err != nil {
@@ -91,7 +99,7 @@ func get(ctx *gin.Context) {
 				ctx.JSON(http.StatusOK,gin.H{"code":-1,"msg":err.Error()})
 				return
 			}
-			v.Url += preApkUrl
+			v.Url = preApkUrl + v.Url
 			ctx.JSON(http.StatusOK,gin.H{
 				"code":1,
 				"data":v,
@@ -130,7 +138,7 @@ func apks(ctx *gin.Context) {
 		if err != nil {
 			break
 		}
-		v.Url += preApkUrl
+		v.Url = preApkUrl + v.Url
 		data = append(data,&v)
 	}
 	ctx.JSON(http.StatusOK,gin.H{"code":1,"data":data})
