@@ -45,3 +45,18 @@
 [GIN-debug] GET    /area/list                --> chat/business.GetAreas (3 handlers)
 [GIN-debug] GET    /api/*any                 --> github.com/swaggo/gin-swagger.CustomWrapHandler.func1 (3 handlers)
 [GIN-debug] Listening and serving HTTP on :8080
+[GIN] 2021/02/26 - 15:20:13 | 200 |      1.9354ms |    192.168.1.10 | GET      "/travel/list"
+[GIN] 2021/02/26 - 15:20:13 | 200 |     15.9971ms |    192.168.1.10 | GET      "/conversation/list?uid=100"
+[GIN] 2021/02/26 - 15:20:13 | 200 |     59.9458ms |    192.168.1.10 | GET      "/index/neardynamic?uid=100&offsetTime=0&limit=8"
+[GIN] 2021/02/26 - 15:20:14 | 200 |      2.9537ms |    192.168.1.10 | GET      "/conversation/list?uid=100"
+[GIN] 2021/02/26 - 15:20:21 | 200 |     48.2155ms |    192.168.1.10 | GET      "/index/neardynamic?uid=100&offsetTime=1611733549&limit=8"
+[GIN] 2021/02/26 - 15:20:22 | 200 |      4.7492ms |    192.168.1.10 | GET      "/index/neardynamic?uid=100&offsetTime=1602663648&limit=8"
+[GIN] 2021/02/26 - 15:20:26 | 200 |    209.9005ms |    192.168.1.10 | GET      "/index/neardynamic?uid=100&offsetTime=0&limit=8"
+[GIN] 2021/02/26 - 15:20:37 | 200 |    125.0012ms |    192.168.1.10 | GET      "/index/neardynamic?uid=100&offsetTime=1611733549&limit=8"
+[GIN] 2021/02/26 - 15:20:38 | 200 |       1.998ms |    192.168.1.10 | GET      "/index/neardynamic?uid=100&offsetTime=1602663648&limit=8"
+[GIN] 2021/02/26 - 15:21:28 | 200 |       2.003ms |    192.168.1.10 | GET      "/index/neardynamic?uid=100&offsetTime=1602663648&limit=8"
+[GIN] 2021/02/26 - 15:23:34 | 200 |    117.9908ms |     192.168.1.5 | GET      "/resource/image/list/1ce40f8127b85bc1fe235df6db81d1a2647.jpg"
+[GIN] 2021/02/26 - 15:23:34 | 404 |            0s |     192.168.1.5 | GET      "/favicon.ico"
+[GIN] 2021/02/26 - 15:23:47 | 200 |     31.9968ms |    192.168.1.10 | GET      "/resource/image/list/1ce40f8127b85bc1fe235df6db81d1a2647.jpg"
+[GIN] 2021/02/26 - 15:26:37 | 200 |    189.6849ms |    192.168.1.10 | GET      "/resource/image/list/cdb2be691921ba5c55fbf290ea8132d7657.jpg"
+[GIN] 2021/02/26 - 15:26:37 | 200 |    112.8934ms |    192.168.1.10 | GET      "/resource/image/list/1ce40f8127b85bc1fe235df6db81d1a2647.jpg"
