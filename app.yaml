@@ -11,15 +11,15 @@
 #mysqlPwd: 6678510Jk.
 #mysqlDb: hometown
 
-logFile: D:\GoWork\chat\gin.log
+logFile: /work/poyangserver/gin.log
 #mysqlLog: /data/mywork/app/hometown/log/mysql.log
 httpPort: 8080
 webSocketPort: 7979
 httpUrl: 192.168.1.5:8080
 webSocketUrl: 192.168.1.5:7979
 imagePathIp: 192.168.1.5
-imageSavePath: D:\GoWork\active_img\
-mysqlPort: 3310
-mysqlPwd: 123456
+imageSavePath: /work/poyangserver/img/
+mysqlPort: 3306
+mysqlPwd: 6678510
 mysqlDb: hometown
-appSavePath: D:\GoWork\active_img\apk\
+appSavePath: /work/poyangserver/

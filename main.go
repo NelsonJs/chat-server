@@ -5,7 +5,7 @@ import (
 	"chat/socketservice"
 )
 
-// @title 微聊 API
+// @title 鄱阳人 API
 // @version 1.0
 // @description 不定时更新
 // @BasePath
