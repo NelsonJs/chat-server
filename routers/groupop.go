@@ -2,8 +2,9 @@ package routers
 
 import (
 	"chat/db/mysql_serve"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func CreateGroup(c *gin.Context) {
@@ -18,7 +19,7 @@ func CreateGroup(c *gin.Context) {
 	if group.OwnerId == "" {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
-			"msg":  "ownerId缺失",
+			"msg":  "ownerId缺失!",
 		})
 		return
 	}
@@ -66,42 +67,42 @@ func UpdateName(c *gin.Context) {
 	}
 }
 
-//增加管理员
+// 增加管理员
 func AddManager(c *gin.Context) {
 
 }
 
-//主动增加成员
+// 主动增加成员
 func AddMember(c *gin.Context) {
 
 }
 
-//移除群组中人员
+// 移除群组中人员
 func RemoveMember(c *gin.Context) {
 
 }
 
-//添加群组头像
+// 添加群组头像
 func AddAvatar(c *gin.Context) {
 
 }
 
-//解散群组
+// 解散群组
 func Del(c *gin.Context) {
 
 }
 
-//转移群组
+// 转移群组
 func Transfer(c *gin.Context) {
 
 }
 
-//申请加入群组
+// 申请加入群组
 func Join(c *gin.Context) {
 
 }
 
-//退出群组
+// 退出群组
 func Exit(c *gin.Context) {
 
 }

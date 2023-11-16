@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+
 	"github.com/spf13/viper"
 )
 
@@ -12,7 +13,7 @@ func init() {
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		panic(fmt.Errorf("fatal error config file:%s \n", err))
+		panic(fmt.Errorf("error:%s \n", err))
 	}
 	fmt.Println("config app:", viper.GetString("webSocketPort"))
 }
